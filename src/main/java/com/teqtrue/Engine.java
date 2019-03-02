@@ -1,3 +1,5 @@
+package com.teqtrue;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
@@ -33,7 +35,7 @@ public class Engine extends Application {
 
     // RENDERER SETTINGS
     int tileSize = 16;
-    int scaler = 3;
+    int scaler = 4;
     int tilesX = 10;
     int tilesY = 10;
 
