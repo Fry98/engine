@@ -1,4 +1,4 @@
-package com.teqtrue;
+package com.teqtrue.engine.utils;
 
 import java.util.HashMap;
 

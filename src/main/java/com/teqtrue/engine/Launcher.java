@@ -1,6 +1,9 @@
-package com.teqtrue;
+package com.teqtrue.engine;
 
 import java.io.FileNotFoundException;
+
+import com.teqtrue.engine.utils.ImageScaler;
+
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -9,7 +12,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
-public class Engine extends Application {
+public class Launcher extends Application {
   public static void main(String[] args) {
     launch(args);
   }
