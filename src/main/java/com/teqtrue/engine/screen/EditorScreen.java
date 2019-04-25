@@ -2,6 +2,8 @@ package com.teqtrue.engine.screen;
 
 import java.io.FileNotFoundException;
 
+import com.teqtrue.engine.model.Coordinates;
+import com.teqtrue.engine.model.KeyMap;
 import com.teqtrue.engine.utils.ImageScaler;
 
 import javafx.scene.canvas.GraphicsContext;
@@ -14,7 +16,7 @@ public class EditorScreen implements IApplicationScreen {
     private GraphicsContext gc;
     private int frameCount = 0;
     private int framerate = 0;
-    private int posX = 0;
+    private Coordinates coords = new Coordinates(0, 0);
     private Image sprites;
 
     @Override
@@ -49,10 +51,17 @@ public class EditorScreen implements IApplicationScreen {
     }
 
     private void update() {
-        if (posX < 960) {
-            posX += 5;
-        } else {
-            posX = -64;
+        if (KeyMap.isPressed(38)){
+            coords.alterY(-5);
+        } 
+        if (KeyMap.isPressed(40)){
+            coords.alterY(5);
+        }
+        if (KeyMap.isPressed(37)){
+            coords.alterX(-5);
+        }
+        if (KeyMap.isPressed(39)){
+            coords.alterX(5);
         }
     }
 
@@ -61,8 +70,8 @@ public class EditorScreen implements IApplicationScreen {
         gc.clearRect(0, 0, 960, 720);
 
         // DRAW SPRITES
-        gc.drawImage(sprites, 0, 0, 64, 64, posX, 300, 64, 64);
-        gc.drawImage(sprites, 64*5, 0, 64, 64, posX, 300, 64, 64);
+        gc.drawImage(sprites, 0, 0, 64, 64, coords.getX(), coords.getY(), 64, 64);
+        gc.drawImage(sprites, 64*5, 0, 64, 64, coords.getX(), coords.getY(), 64, 64);
 
         // DRAW FRAMERATE
         gc.setFill(Color.RED);

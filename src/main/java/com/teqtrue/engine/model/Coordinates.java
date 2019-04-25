@@ -27,6 +27,14 @@ public class Coordinates {
         this.y = y;
     }
 
+    public void alterX(double x) {
+        this.x += x;
+    }
+
+    public void alterY(double y) {
+        this.y += y;
+    }
+
     /**
      * Returns Euclidean distance between this and other {@code Coordinates}.
      * @param other
