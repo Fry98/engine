@@ -4,7 +4,7 @@ import javafx.scene.canvas.GraphicsContext;
 
 public interface IApplicationScreen {
 
-    void init(GraphicsContext gc);
-    IApplicationScreen getNextScreen();
+    public void init(GraphicsContext gc);
+    public IApplicationScreen getNextScreen();
 
 }

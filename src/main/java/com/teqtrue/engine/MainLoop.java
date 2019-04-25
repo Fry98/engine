@@ -2,6 +2,7 @@ package com.teqtrue.engine;
 
 import com.teqtrue.engine.screen.EditorScreen;
 import com.teqtrue.engine.screen.IApplicationScreen;
+import com.teqtrue.engine.screen.MenuScreen;
 
 import javafx.scene.canvas.GraphicsContext;
 
