@@ -2,12 +2,14 @@ package com.teqtrue.engine.model.object;
 
 import com.teqtrue.engine.graphics.Sprite;
 
-public abstract class AGameObject {
+public class GameObject {
 
     private Sprite sprite;
+    private boolean collider;
 
-    public AGameObject(Sprite sprite) {
+    public GameObject(Sprite sprite, boolean collider) {
         this.sprite = sprite;
+        this.collider = collider;
     }
 
     public Sprite getSprite() {

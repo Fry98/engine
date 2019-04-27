@@ -7,6 +7,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.stage.Stage;
 
+import com.teqtrue.engine.model.Config;
 import com.teqtrue.engine.model.KeyMap;
 
 public class Launcher extends Application {
@@ -21,10 +22,14 @@ public class Launcher extends Application {
         // GAME WINDOW
         stage.setTitle("TeqEngine");
         Group root = new Group();
-        Canvas canvas = new Canvas(960, 720);
+        Canvas canvas = new Canvas(Config.getScreenSize().getX(), Config.getScreenSize().getY());
         GraphicsContext gc = canvas.getGraphicsContext2D();
         root.getChildren().add(canvas);
         Scene scene = new Scene(root);
+
+        scene.setOnMouseMoved(e -> {
+            KeyMap.setMousePosition(e.getX(), e.getY());
+        });
 
         scene.setOnKeyPressed(e -> {
             KeyMap.setKey(e.getCode().getCode(), false);
