@@ -1,35 +1,31 @@
 package com.teqtrue.engine.screen;
 
-import java.io.FileNotFoundException;
-
 import com.teqtrue.engine.model.Config;
 import com.teqtrue.engine.model.Coordinates;
+import com.teqtrue.engine.model.GameMap;
 import com.teqtrue.engine.model.KeyMap;
-import com.teqtrue.engine.utils.ImageScaler;
+import com.teqtrue.engine.model.object.GameObject;
 
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 
 public class EditorScreen implements IApplicationScreen {
 
     private GraphicsContext gc;
     private Coordinates camera = new Coordinates(0, 0);
-    private Image sprites;
+    private GameMap gameMap = new GameMap();
 
     @Override
     public void init(GraphicsContext gc) {
         this.gc = gc;
         try {
-            this.sprites = ImageScaler.scale("src/main/assets/env_day.png", 16, Config.getTileSize());
             loop();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void loop() throws FileNotFoundException, InterruptedException {
+    private void loop() throws InterruptedException {
         while (true) {
             long tickStart = System.currentTimeMillis();
             update();
@@ -57,10 +53,27 @@ public class EditorScreen implements IApplicationScreen {
         }
     }
 
-    private void draw() throws FileNotFoundException, InterruptedException {
+    private void draw() {
         // CLEAR SCREEN
         gc.setFill(Color.WHITE);
         gc.fillRect(0, 0, Config.getScreenSize().getX(), Config.getScreenSize().getY());
+
+        // DRAW OBJECTS IN GAMEMAP
+        int leftX = (int) Math.floor(camera.getX() / Config.getTileSize());
+        int upY = (int) Math.floor(camera.getY() / Config.getTileSize());
+        int rightX = (int) Math.floor((camera.getX() + Config.getScreenSize().getX()) / Config.getTileSize());
+        int downY = (int) Math.floor((camera.getY() + Config.getScreenSize().getY()) / Config.getTileSize());
+
+        for (int x = leftX; x <= rightX; x++) {
+            for (int y = upY; y <= downY; y++) {
+                GameObject obj = gameMap.get(x, y);
+                if (obj != null) {
+                    double cornerX = ((x * Config.getTileSize()) - camera.getX());
+                    double cornerY = ((y * Config.getTileSize()) - camera.getY());
+                    obj.drawObject(gc, cornerX, cornerY);
+                }
+            }
+        }
 
         // DRAW HIGHLIGHTER
         int tileX = (int) Math.floor((camera.getX() + KeyMap.getMouse().getX()) / Config.getTileSize());

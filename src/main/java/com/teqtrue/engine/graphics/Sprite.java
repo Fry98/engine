@@ -1,5 +1,6 @@
 package com.teqtrue.engine.graphics;
 
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
 public class Sprite {
@@ -45,4 +46,7 @@ public class Sprite {
         this.layer = layer;
     }
 
+    public void drawSprite(GraphicsContext gc, double x, double y) {
+        gc.drawImage(image, sx, sy, sw, sh, x, y, sw, sh);
+    }
 }

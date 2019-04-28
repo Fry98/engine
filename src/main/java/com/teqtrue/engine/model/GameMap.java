@@ -14,42 +14,23 @@ public class GameMap {
     private Map<Coordinates, GameObject> objects = new HashMap<>();
     private List<AEntity> entities = new ArrayList<>();
 
-    /*public void set(int x, int y, int val) {
-        if (this.objects.containsKey(x)) {
-            HashMap<Integer, Integer> column = this.objects.get(x);
-            column.put(y, val);
-        } else {
-            HashMap<Integer, Integer> newColumn = new HashMap<>();
-            newColumn.put(y, val);
-            this.objects.put(x, newColumn);
-        }
+    public void set(int x, int y, GameObject obj) {
+        objects.put(new Coordinates(x, y), obj);
     }
 
     public boolean remove(int x, int y) {
-        if (!this.objects.containsKey(x)) {
-            return false;
+        if (objects.containsKey(new Coordinates(x, y))) {
+            objects.remove(new Coordinates(x, y));
+            return true;
         }
-        HashMap<Integer, Integer> column = this.objects.get(x);
-        if (!column.containsKey(y)) {
-            return false;
-        }
-        if (column.size() == 1) {
-            this.objects.remove(x);
-        } else {
-            column.remove(y);
-        }
-        return true;
+        return false;
     }
 
-    public int get(int x, int y) {
-        if (!this.objects.containsKey(x)) {
-            return -1;
+    public GameObject get(int x, int y) {
+        if (objects.containsKey(new Coordinates(x, y))) {
+            return objects.get(new Coordinates(x, y));
         }
-        HashMap<Integer, Integer> column = this.objects.get(x);
-        if (!column.containsKey(y)) {
-            return -1;
-        }
-        return column.get(y);
-    }*/
+        return null;
+    }
 
 }
