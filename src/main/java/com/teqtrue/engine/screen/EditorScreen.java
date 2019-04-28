@@ -1,10 +1,14 @@
 package com.teqtrue.engine.screen;
 
+import java.util.ArrayList;
+
+import com.teqtrue.engine.graphics.Sprite;
 import com.teqtrue.engine.model.Config;
 import com.teqtrue.engine.model.Coordinates;
 import com.teqtrue.engine.model.GameMap;
 import com.teqtrue.engine.model.KeyMap;
 import com.teqtrue.engine.model.object.GameObject;
+import com.teqtrue.engine.utils.ImageScaler;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -66,11 +70,13 @@ public class EditorScreen implements IApplicationScreen {
 
         for (int x = leftX; x <= rightX; x++) {
             for (int y = upY; y <= downY; y++) {
-                GameObject obj = gameMap.get(x, y);
-                if (obj != null) {
+                ArrayList<GameObject> objArr = gameMap.get(x, y);
+                if (objArr != null) {
                     double cornerX = ((x * Config.getTileSize()) - camera.getX());
                     double cornerY = ((y * Config.getTileSize()) - camera.getY());
-                    obj.drawObject(gc, cornerX, cornerY);
+                    for (GameObject obj : objArr) {
+                        obj.drawObject(gc, cornerX, cornerY);
+                    }
                 }
             }
         }
