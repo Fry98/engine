@@ -43,17 +43,29 @@ public class EditorScreen implements IApplicationScreen {
     }
 
     private void update() {
-        if (KeyMap.isPressed(38) && camera.getY() > 0) {
-            camera.alterY(-10);
+        int speed = 10;
+        if (KeyMap.isPressed(16)) {
+            speed = 20;
+        }
+        if (KeyMap.isPressed(87)) {
+            if (camera.getY() - speed >= 0) {
+                camera.alterY(-speed);
+            } else {
+                camera.setY(0);
+            }
         } 
-        if (KeyMap.isPressed(40)) {
-            camera.alterY(10);
+        if (KeyMap.isPressed(83)) {
+            camera.alterY(speed);
         }
-        if (KeyMap.isPressed(37) && camera.getX() > 0) {
-            camera.alterX(-10);
+        if (KeyMap.isPressed(65)) {
+            if (camera.getX() - speed >= 0) {
+                camera.alterX(-speed);
+            } else {
+                camera.setX(0);
+            }
         }
-        if (KeyMap.isPressed(39)) {
-            camera.alterX(10);
+        if (KeyMap.isPressed(68)) {
+            camera.alterX(speed);
         }
     }
 
@@ -81,11 +93,16 @@ public class EditorScreen implements IApplicationScreen {
             }
         }
 
-        // DRAW HIGHLIGHTER
+        // SELECTED TILE CALCULATION
         int tileX = (int) Math.floor((camera.getX() + KeyMap.getMouse().getX()) / Config.getTileSize());
         int tileY = (int) Math.floor((camera.getY() + KeyMap.getMouse().getY()) / Config.getTileSize());
         int cornerX = (int) ((tileX * Config.getTileSize()) - camera.getX());
         int cornerY = (int) ((tileY * Config.getTileSize()) - camera.getY());
+
+        // DRAW SELECTED OBJECT
+        // TODO
+
+        // DRAW HIGHLIGHTER
         gc.setStroke(Color.BLACK);
         gc.setLineWidth(2);
         gc.strokeRect(cornerX + 1, cornerY + 1, 47, 47);

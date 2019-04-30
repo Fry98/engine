@@ -1,5 +1,6 @@
 package com.teqtrue.engine;
 
+import com.teqtrue.engine.model.Config;
 import com.teqtrue.engine.screen.EditorScreen;
 import com.teqtrue.engine.screen.IApplicationScreen;
 import com.teqtrue.engine.screen.MenuScreen;
@@ -16,6 +17,7 @@ public class MainLoop implements Runnable {
     @Override
     public void run() {
         IApplicationScreen screen = new EditorScreen();
+        Config.init();
         while (true) {
             screen.init(gc);
             screen = screen.getNextScreen();
