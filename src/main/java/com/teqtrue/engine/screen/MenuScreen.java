@@ -2,10 +2,7 @@ package com.teqtrue.engine.screen;
 
 import java.io.FileNotFoundException;
 
-import com.teqtrue.engine.utils.ImageScaler;
-
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 
 public class MenuScreen implements IApplicationScreen {
 

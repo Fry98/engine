@@ -1,7 +1,6 @@
 package com.teqtrue.engine.model;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 
 import com.teqtrue.engine.graphics.Sprite;
 import com.teqtrue.engine.model.object.GameObject;
@@ -11,12 +10,39 @@ import javafx.scene.image.Image;
 
 public class Config {
     private static Image spritesheet;
+    private static Sprite[] sprites;
+    private static GameObject[] registeredObjects;
 
     public static void init() {
         try {
-            spritesheet = ImageScaler.scale("src/main/assets/sprites.png", 16, 48);
+            // LOAD SPRITESHEET
+            spritesheet = ImageScaler.scale("src/main/assets/sprites.png", 16, getTileSize());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+        }
+
+        // LOAD ALL SPRITES FROM SPRITESHEET
+        int tileCount = (int) Math.floor(spritesheet.getWidth() / getTileSize());
+        sprites = new Sprite[tileCount];
+        for (int i = 0; i < tileCount; i++) {
+            sprites[i] = new Sprite(spritesheet, getTileSize() * i, 0, getTileSize(), getTileSize());
+        }
+
+        // ASSIGN COLLISIONS TO SPRITES
+        Boolean[] collisions = new Boolean[]{
+            false,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+        };
+
+        // REGISTER GAMEOBJECTS
+        registeredObjects = new GameObject[tileCount];
+        for (int i = 0; i < collisions.length; i++) {
+            registeredObjects[i] = new GameObject(sprites[i], collisions[i]);
         }
     }
 
@@ -30,5 +56,13 @@ public class Config {
 
     public static Image getSpritesheet() {
         return spritesheet;
+    }
+
+    public static Sprite[] getSprites() {
+        return sprites;
+    }
+
+    public static GameObject[] getRegisteredObjects() {
+        return registeredObjects;
     }
 }

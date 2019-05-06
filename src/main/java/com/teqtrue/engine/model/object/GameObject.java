@@ -1,7 +1,6 @@
 package com.teqtrue.engine.model.object;
 
 import com.teqtrue.engine.graphics.Sprite;
-import com.teqtrue.engine.model.Config;
 
 import javafx.scene.canvas.GraphicsContext;
 
@@ -25,5 +24,9 @@ public class GameObject {
 
     public void drawObject(GraphicsContext gc, double x, double y) {
         sprite.drawSprite(gc, x, y);
+    }
+
+    public boolean hasCollision() {
+        return collider;
     }
 }

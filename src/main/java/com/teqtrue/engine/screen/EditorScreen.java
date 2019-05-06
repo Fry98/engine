@@ -2,13 +2,11 @@ package com.teqtrue.engine.screen;
 
 import java.util.ArrayList;
 
-import com.teqtrue.engine.graphics.Sprite;
 import com.teqtrue.engine.model.Config;
 import com.teqtrue.engine.model.Coordinates;
 import com.teqtrue.engine.model.GameMap;
 import com.teqtrue.engine.model.KeyMap;
 import com.teqtrue.engine.model.object.GameObject;
-import com.teqtrue.engine.utils.ImageScaler;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -22,6 +20,11 @@ public class EditorScreen implements IApplicationScreen {
     @Override
     public void init(GraphicsContext gc) {
         this.gc = gc;
+        for (int x = 0; x < 10; x++) {
+            for (int y = 0; y < 10; y++) {
+                gameMap.set(x, y, 0);
+            }
+        }
         try {
             loop();
         } catch (Exception e) {
