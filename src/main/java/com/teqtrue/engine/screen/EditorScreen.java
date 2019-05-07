@@ -47,27 +47,27 @@ public class EditorScreen implements IApplicationScreen {
 
     private void update() {
         int speed = 10;
-        if (KeyMap.isPressed(16)) {
+        if (KeyMap.isPressed("Shift")) {
             speed = 20;
         }
-        if (KeyMap.isPressed(87)) {
+        if (KeyMap.isPressed("W")) {
             if (camera.getY() - speed >= 0) {
                 camera.alterY(-speed);
             } else {
                 camera.setY(0);
             }
         } 
-        if (KeyMap.isPressed(83)) {
+        if (KeyMap.isPressed("S")) {
             camera.alterY(speed);
         }
-        if (KeyMap.isPressed(65)) {
+        if (KeyMap.isPressed("A")) {
             if (camera.getX() - speed >= 0) {
                 camera.alterX(-speed);
             } else {
                 camera.setX(0);
             }
         }
-        if (KeyMap.isPressed(68)) {
+        if (KeyMap.isPressed("D")) {
             camera.alterX(speed);
         }
     }

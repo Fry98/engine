@@ -32,11 +32,11 @@ public class Launcher extends Application {
         });
 
         scene.setOnKeyPressed(e -> {
-            KeyMap.setKey(e.getCode().getCode(), false);
+            KeyMap.setKey(e.getCode(), false);
         });
 
         scene.setOnKeyReleased(e -> {
-            KeyMap.setKey(e.getCode().getCode(), true);
+            KeyMap.setKey(e.getCode(), true);
         });
 
         stage.setScene(scene);
