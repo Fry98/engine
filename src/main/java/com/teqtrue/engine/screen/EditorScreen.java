@@ -9,6 +9,7 @@ import com.teqtrue.engine.model.KeyMap;
 import com.teqtrue.engine.model.object.GameObject;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 
 public class EditorScreen implements IApplicationScreen {
@@ -47,27 +48,27 @@ public class EditorScreen implements IApplicationScreen {
 
     private void update() {
         int speed = 10;
-        if (KeyMap.isPressed("Shift")) {
+        if (KeyMap.isPressed(KeyCode.SHIFT)) {
             speed = 20;
         }
-        if (KeyMap.isPressed("W")) {
+        if (KeyMap.isPressed(KeyCode.W)) {
             if (camera.getY() - speed >= 0) {
                 camera.alterY(-speed);
             } else {
                 camera.setY(0);
             }
         } 
-        if (KeyMap.isPressed("S")) {
+        if (KeyMap.isPressed(KeyCode.S)) {
             camera.alterY(speed);
         }
-        if (KeyMap.isPressed("A")) {
+        if (KeyMap.isPressed(KeyCode.A)) {
             if (camera.getX() - speed >= 0) {
                 camera.alterX(-speed);
             } else {
                 camera.setX(0);
             }
         }
-        if (KeyMap.isPressed("D")) {
+        if (KeyMap.isPressed(KeyCode.D)) {
             camera.alterX(speed);
         }
     }

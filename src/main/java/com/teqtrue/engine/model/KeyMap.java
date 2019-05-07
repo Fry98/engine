@@ -24,6 +24,10 @@ public class KeyMap {
         return keys.stream().anyMatch(k -> keyName.equals(k.getName()));
     }
 
+    public static boolean isPressed(KeyCode keyCode) {
+        return keys.contains(keyCode);
+    }
+
     public static void setMousePosition(double x, double y) {
         mousePosition.setX(x);
         mousePosition.setY(y);
