@@ -1,11 +1,9 @@
 package com.teqtrue.engine.screen;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import com.teqtrue.engine.model.Config;
-import com.teqtrue.engine.model.Coordinates;
-import com.teqtrue.engine.model.GameMap;
-import com.teqtrue.engine.model.KeyMap;
+import com.teqtrue.engine.model.*;
 import com.teqtrue.engine.model.object.GameObject;
 
 import javafx.scene.canvas.GraphicsContext;
@@ -19,6 +17,7 @@ public class EditorScreen implements IApplicationScreen {
     private Coordinates camera = new Coordinates(0, 0);
     private GameMap gameMap = new GameMap();
     private int selectedObj = 0;
+    private List<Coordinates> tmpPlacement = new ArrayList<>();
 
     @Override
     public void init(GraphicsContext gc) {
@@ -31,17 +30,6 @@ public class EditorScreen implements IApplicationScreen {
             } else if (e.getDeltaY() < 0 && selectedObj < (Config.getRegisteredObjects().length - 2)) {
                 selectedObj++;
             }
-        });
-
-        // MOUSE CLICK HANDLER
-        gc.getCanvas().getScene().setOnMouseClicked(e -> {
-            int tileX = (int) Math.floor((camera.getX() + KeyMap.getMouse().getX()) / Config.getTileSize());
-            int tileY = (int) Math.floor((camera.getY() + KeyMap.getMouse().getY()) / Config.getTileSize());
-            if (e.getButton().equals(MouseButton.PRIMARY)) {
-                gameMap.push(tileX, tileY, selectedObj);
-                return;
-            }
-            gameMap.pop(tileX, tileY);
         });
 
         // START LOOP
@@ -90,6 +78,23 @@ public class EditorScreen implements IApplicationScreen {
         if (KeyMap.isPressed(KeyCode.D)) {
             camera.alterX(speed);
         }
+
+        int tileX = (int) Math.floor((camera.getX() + KeyMap.getMouse().getX()) / Config.getTileSize());
+        int tileY = (int) Math.floor((camera.getY() + KeyMap.getMouse().getY()) / Config.getTileSize());
+        Coordinates tile = new Coordinates(tileX, tileY);
+        if (KeyMap.isMousePressed(MouseButton.PRIMARY) && !KeyMap.isMousePressed(MouseButton.SECONDARY)) {
+            if (!tmpPlacement.contains(tile)) {
+                gameMap.push(tileX, tileY, selectedObj);
+                tmpPlacement.add(tile);
+            }
+        } else if (KeyMap.isMousePressed(MouseButton.SECONDARY) && !KeyMap.isMousePressed(MouseButton.PRIMARY)) {
+            if (!tmpPlacement.contains(tile)) {
+                gameMap.pop(tileX, tileY);
+                tmpPlacement.add(tile);
+            }
+        } else if (tmpPlacement.size() > 0) {
+            tmpPlacement.clear();
+        }
     }
 
     private void draw() {
@@ -131,6 +136,11 @@ public class EditorScreen implements IApplicationScreen {
         gc.setStroke(Color.BLACK);
         gc.setLineWidth(2);
         gc.strokeRect(cornerX + 1, cornerY + 1, 47, 47);
+
+
+        // DRAW COORDINATES
+        gc.setFill(Color.BLACK);
+        gc.fillText(String.format("X: %d, Y: %d", tileX, tileY), 5, 15);
     }
     
     @Override

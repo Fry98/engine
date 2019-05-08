@@ -27,17 +27,15 @@ public class Launcher extends Application {
         root.getChildren().add(canvas);
         Scene scene = new Scene(root);
 
-        scene.setOnMouseMoved(e -> {
-            KeyMap.setMousePosition(e.getX(), e.getY());
-        });
+        scene.setOnMouseMoved(e -> KeyMap.setMousePosition(e.getX(), e.getY()));
 
-        scene.setOnKeyPressed(e -> {
-            KeyMap.setKey(e.getCode(), false);
-        });
+        scene.setOnMouseDragged(e -> KeyMap.setMousePosition(e.getX(), e.getY()));
 
-        scene.setOnKeyReleased(e -> {
-            KeyMap.setKey(e.getCode(), true);
-        });
+        scene.setOnMousePressed(e -> KeyMap.setMousePressed(e.getButton(), false));
+        scene.setOnMouseReleased(e -> KeyMap.setMousePressed(e.getButton(), true));
+
+        scene.setOnKeyPressed(e -> KeyMap.setKey(e.getCode(), false));
+        scene.setOnKeyReleased(e -> KeyMap.setKey(e.getCode(), true));
 
         stage.setScene(scene);
         stage.setResizable(false);
