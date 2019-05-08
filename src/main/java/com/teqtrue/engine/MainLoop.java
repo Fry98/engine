@@ -4,6 +4,7 @@ import com.teqtrue.engine.model.Config;
 import com.teqtrue.engine.screen.EditorScreen;
 import com.teqtrue.engine.screen.IApplicationScreen;
 
+import com.teqtrue.engine.screen.MenuScreen;
 import javafx.scene.canvas.GraphicsContext;
 
 public class MainLoop implements Runnable {
@@ -15,7 +16,7 @@ public class MainLoop implements Runnable {
 
     @Override
     public void run() {
-        IApplicationScreen screen = new EditorScreen();
+        IApplicationScreen screen = new MenuScreen();
         Config.init();
         while (true) {
             screen.init(gc);

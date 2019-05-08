@@ -1,6 +1,7 @@
 package com.teqtrue.engine;
 
 import javafx.application.Application;
+import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -26,6 +27,7 @@ public class Launcher extends Application {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         root.getChildren().add(canvas);
         Scene scene = new Scene(root);
+        scene.setCursor(Cursor.HAND);
 
         scene.setOnMouseMoved(e -> KeyMap.setMousePosition(e.getX(), e.getY()));
 

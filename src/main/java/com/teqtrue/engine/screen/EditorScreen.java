@@ -10,6 +10,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 
 public class EditorScreen implements IApplicationScreen {
 
@@ -43,7 +45,8 @@ public class EditorScreen implements IApplicationScreen {
     private void loop() throws InterruptedException {
         while (true) {
             long tickStart = System.currentTimeMillis();
-            update();
+            boolean brk = update();
+            if (brk) break;
             draw();
             long tickDuration = System.currentTimeMillis() - tickStart;
             long timeout = 20 - tickDuration;
@@ -53,7 +56,10 @@ public class EditorScreen implements IApplicationScreen {
         }
     }
 
-    private void update() {
+    private boolean update() {
+        if (KeyMap.isPressed(KeyCode.ESCAPE)) {
+            return true;
+        }
         int speed = 10;
         if (KeyMap.isPressed(KeyCode.SHIFT)) {
             speed = 20;
@@ -79,8 +85,9 @@ public class EditorScreen implements IApplicationScreen {
             camera.alterX(speed);
         }
 
-        int tileX = (int) Math.floor((camera.getX() + KeyMap.getMouse().getX()) / Config.getTileSize());
-        int tileY = (int) Math.floor((camera.getY() + KeyMap.getMouse().getY()) / Config.getTileSize());
+        Coordinates mousePos = KeyMap.getMouse();
+        int tileX = (int) Math.floor((camera.getX() + mousePos.getX()) / Config.getTileSize());
+        int tileY = (int) Math.floor((camera.getY() + mousePos.getY()) / Config.getTileSize());
         Coordinates tile = new Coordinates(tileX, tileY);
         if (KeyMap.isMousePressed(MouseButton.PRIMARY) && !KeyMap.isMousePressed(MouseButton.SECONDARY)) {
             if (!tmpPlacement.contains(tile)) {
@@ -95,6 +102,8 @@ public class EditorScreen implements IApplicationScreen {
         } else if (tmpPlacement.size() > 0) {
             tmpPlacement.clear();
         }
+
+        return false;
     }
 
     private void draw() {
@@ -122,8 +131,9 @@ public class EditorScreen implements IApplicationScreen {
         }
 
         // SELECTED TILE CALCULATION
-        int tileX = (int) Math.floor((camera.getX() + KeyMap.getMouse().getX()) / Config.getTileSize());
-        int tileY = (int) Math.floor((camera.getY() + KeyMap.getMouse().getY()) / Config.getTileSize());
+        Coordinates mousePos = KeyMap.getMouse();
+        int tileX = (int) Math.floor((camera.getX() + mousePos.getX()) / Config.getTileSize());
+        int tileY = (int) Math.floor((camera.getY() + mousePos.getY()) / Config.getTileSize());
         int cornerX = (int) ((tileX * Config.getTileSize()) - camera.getX());
         int cornerY = (int) ((tileY * Config.getTileSize()) - camera.getY());
 
@@ -140,11 +150,13 @@ public class EditorScreen implements IApplicationScreen {
 
         // DRAW COORDINATES
         gc.setFill(Color.BLACK);
+        gc.setTextAlign(TextAlignment.LEFT);
+        gc.setFont(Font.font("Arial", 15));
         gc.fillText(String.format("X: %d, Y: %d", tileX, tileY), 5, 15);
     }
     
     @Override
     public IApplicationScreen getNextScreen() {
-        return new ExitScreen();
+        return new MenuScreen();
     }
 }
