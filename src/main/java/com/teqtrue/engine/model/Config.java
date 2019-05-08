@@ -36,11 +36,12 @@ public class Config {
             true,
             true,
             true,
+            true,
             true
         };
 
         // REGISTER GAMEOBJECTS
-        registeredObjects = new GameObject[tileCount];
+        registeredObjects = new GameObject[collisions.length];
         for (int i = 0; i < collisions.length; i++) {
             registeredObjects[i] = new GameObject(sprites[i], collisions[i]);
         }

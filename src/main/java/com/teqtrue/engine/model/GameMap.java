@@ -12,27 +12,44 @@ public class GameMap {
     private Map<Coordinates, ArrayList<Integer>> objects = new HashMap<>();
     private List<AEntity> entities = new ArrayList<>();
 
-    public void set(int x, int y, int objIndex) {
-        if (objects.containsKey(new Coordinates(x, y))) {
-            objects.get(new Coordinates(x, y)).add(objIndex);
+    public void set(int x, int y, ArrayList<Integer> tileData) {
+        objects.put(new Coordinates(x, y), tileData);
+    }
+
+    public void remove(int x, int y) {
+        Coordinates coords = new Coordinates(x, y);
+        if (objects.containsKey(coords)) {
+            objects.remove(coords);
+        }
+    }
+
+    public void push(int x, int y, int objIndex) {
+        Coordinates coords = new Coordinates(x, y);
+        if (objects.containsKey(coords)) {
+            objects.get(coords).add(objIndex);
         } else {
             ArrayList<Integer> newArray = new ArrayList<>();
             newArray.add(objIndex);
-            objects.put(new Coordinates(x, y), newArray);
+            objects.put(coords, newArray);
         }
     }
 
-    public boolean remove(int x, int y) {
-        if (objects.containsKey(new Coordinates(x, y))) {
-            objects.remove(new Coordinates(x, y));
-            return true;
+    public void pop(int x, int y) {
+        Coordinates coords = new Coordinates(x, y);
+        if (objects.containsKey(coords)) {
+            ArrayList<Integer> tile = objects.get(coords);
+            if (tile.size() > 1) {
+                tile.remove(tile.size() - 1);
+            } else {
+                objects.remove(coords);
+            }
         }
-        return false;
     }
 
     public ArrayList<GameObject> get(int x, int y) {
-        if (objects.containsKey(new Coordinates(x, y))) {
-            ArrayList<Integer> indexList = objects.get(new Coordinates(x, y));
+        Coordinates coords = new Coordinates(x, y);
+        if (objects.containsKey(coords)) {
+            ArrayList<Integer> indexList = objects.get(coords);
             ArrayList<GameObject> objList = new ArrayList<>();
             for (int item : indexList) {
                 objList.add(Config.getRegisteredObjects()[item]);

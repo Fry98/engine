@@ -10,6 +10,7 @@ import com.teqtrue.engine.model.object.GameObject;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
 
 public class EditorScreen implements IApplicationScreen {
@@ -17,15 +18,33 @@ public class EditorScreen implements IApplicationScreen {
     private GraphicsContext gc;
     private Coordinates camera = new Coordinates(0, 0);
     private GameMap gameMap = new GameMap();
+    private int selectedObj = 0;
 
     @Override
     public void init(GraphicsContext gc) {
         this.gc = gc;
-        for (int x = 0; x < 10; x++) {
-            for (int y = 0; y < 10; y++) {
-                gameMap.set(x, y, 0);
+
+        // SCROLL EVENT HANDLER
+        gc.getCanvas().getScene().setOnScroll(e -> {
+            if (e.getDeltaY() > 0 && selectedObj > 0) {
+                selectedObj--;
+            } else if (e.getDeltaY() < 0 && selectedObj < (Config.getRegisteredObjects().length - 2)) {
+                selectedObj++;
             }
-        }
+        });
+
+        // MOUSE CLICK HANDLER
+        gc.getCanvas().getScene().setOnMouseClicked(e -> {
+            int tileX = (int) Math.floor((camera.getX() + KeyMap.getMouse().getX()) / Config.getTileSize());
+            int tileY = (int) Math.floor((camera.getY() + KeyMap.getMouse().getY()) / Config.getTileSize());
+            if (e.getButton().equals(MouseButton.PRIMARY)) {
+                gameMap.push(tileX, tileY, selectedObj);
+                return;
+            }
+            gameMap.pop(tileX, tileY);
+        });
+
+        // START LOOP
         try {
             loop();
         } catch (Exception e) {
@@ -104,7 +123,9 @@ public class EditorScreen implements IApplicationScreen {
         int cornerY = (int) ((tileY * Config.getTileSize()) - camera.getY());
 
         // DRAW SELECTED OBJECT
-        // TODO
+        gc.setGlobalAlpha(0.7);
+        Config.getRegisteredObjects()[selectedObj].drawObject(gc, cornerX, cornerY);
+        gc.setGlobalAlpha(1);
 
         // DRAW HIGHLIGHTER
         gc.setStroke(Color.BLACK);
@@ -116,5 +137,4 @@ public class EditorScreen implements IApplicationScreen {
     public IApplicationScreen getNextScreen() {
         return new ExitScreen();
     }
-
 }
