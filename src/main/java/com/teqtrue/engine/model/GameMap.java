@@ -11,20 +11,30 @@ import java.util.Map;
 public class GameMap {
     private Map<Coordinates, ArrayList<Integer>> objects = new HashMap<>();
     private List<AEntity> entities = new ArrayList<>();
+    private Coordinates spawnPoint = null;
 
-    public void set(int x, int y, ArrayList<Integer> tileData) {
-        objects.put(new Coordinates(x, y), tileData);
+    // SET
+    public void set(Coordinates coords, ArrayList<Integer> tileData) {
+        objects.put(coords, tileData);
     }
 
-    public void remove(int x, int y) {
-        Coordinates coords = new Coordinates(x, y);
+    public void set(int x, int y, ArrayList<Integer> tileData) {
+        set(new Coordinates(x, y), tileData);
+    }
+
+    // REMOVE
+    public void remove(Coordinates coords) {
         if (objects.containsKey(coords)) {
             objects.remove(coords);
         }
     }
 
-    public void push(int x, int y, int objIndex) {
-        Coordinates coords = new Coordinates(x, y);
+    public void remove(int x, int y) {
+        remove(new Coordinates(x, y));
+    }
+
+    // PUSH
+    public void push(Coordinates coords, int objIndex) {
         if (objects.containsKey(coords)) {
             objects.get(coords).add(objIndex);
         } else {
@@ -33,9 +43,13 @@ public class GameMap {
             objects.put(coords, newArray);
         }
     }
+    
+    public void push(int x, int y, int objIndex) {
+        push(new Coordinates(x, y), objIndex);
+    }
 
-    public void pop(int x, int y) {
-        Coordinates coords = new Coordinates(x, y);
+    // POP
+    public void pop(Coordinates coords) {
         if (objects.containsKey(coords)) {
             ArrayList<Integer> tile = objects.get(coords);
             if (tile.size() > 1) {
@@ -46,8 +60,12 @@ public class GameMap {
         }
     }
 
-    public ArrayList<GameObject> get(int x, int y) {
-        Coordinates coords = new Coordinates(x, y);
+    public void pop(int x, int y) {
+        pop(new Coordinates(x, y));
+    }
+
+    // GET
+    public ArrayList<GameObject> get(Coordinates coords) {
         if (objects.containsKey(coords)) {
             ArrayList<Integer> indexList = objects.get(coords);
             ArrayList<GameObject> objList = new ArrayList<>();
@@ -57,6 +75,27 @@ public class GameMap {
             return objList;
         }
         return null;
+    }
+
+    public ArrayList<GameObject> get(int x, int y) {
+        return get(new Coordinates(x, y));
+    }
+
+    // SET SPAWN
+    public void setSpawn(Coordinates coords) {
+        spawnPoint = coords;
+    }
+
+    public void setSpawn(int x, int y) {
+        spawnPoint = new Coordinates(x, y);
+    }
+
+    public void unsetSpawn() {
+        spawnPoint = null;
+    }
+
+    public Coordinates getSpawn() {
+        return spawnPoint;
     }
 
     public List<AEntity> getEntities() {

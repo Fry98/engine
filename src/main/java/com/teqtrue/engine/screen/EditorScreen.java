@@ -83,7 +83,7 @@ public class EditorScreen implements IApplicationScreen {
         }
         if (KeyMap.isPressed(KeyCode.D)) {
             camera.alterX(speed);
-        }
+        }        
 
         Coordinates mousePos = KeyMap.getMouse();
         int tileX = (int) Math.floor((camera.getX() + mousePos.getX()) / Config.getTileSize());
@@ -91,16 +91,38 @@ public class EditorScreen implements IApplicationScreen {
         Coordinates tile = new Coordinates(tileX, tileY);
         if (KeyMap.isMousePressed(MouseButton.PRIMARY) && !KeyMap.isMousePressed(MouseButton.SECONDARY)) {
             if (!tmpPlacement.contains(tile)) {
-                gameMap.push(tileX, tileY, selectedObj);
+                gameMap.push(tile, selectedObj);
                 tmpPlacement.add(tile);
+                if (Config.getRegisteredObjects()[selectedObj].hasCollision() && gameMap.getSpawn() != null && gameMap.getSpawn().equals(tile)) {
+                    gameMap.unsetSpawn();
+                }
             }
         } else if (KeyMap.isMousePressed(MouseButton.SECONDARY) && !KeyMap.isMousePressed(MouseButton.PRIMARY)) {
             if (!tmpPlacement.contains(tile)) {
-                gameMap.pop(tileX, tileY);
+                gameMap.pop(tile);
                 tmpPlacement.add(tile);
+                if (gameMap.get(tile) == null  && gameMap.getSpawn() != null && gameMap.getSpawn().equals(tile)) {
+                    gameMap.unsetSpawn();
+                }
             }
         } else if (tmpPlacement.size() > 0) {
             tmpPlacement.clear();
+        }
+
+        if (KeyMap.isPressed(KeyCode.E)) {
+            ArrayList<GameObject> tileData = gameMap.get(tile);
+            if (tileData != null && (gameMap.getSpawn() == null || !gameMap.getSpawn().equals(tile))) {
+                boolean viable = true;
+                for (GameObject obj : tileData) {
+                    if (obj.hasCollision()) {
+                        viable = false;
+                        break;
+                    }
+                }
+                if (viable) {
+                    gameMap.setSpawn(tile);
+                }
+            }
         }
 
         return false;
@@ -147,6 +169,11 @@ public class EditorScreen implements IApplicationScreen {
         gc.setLineWidth(2);
         gc.strokeRect(cornerX + 1, cornerY + 1, 47, 47);
 
+        // DRAW SPAWN POINT
+        Coordinates spawn = gameMap.getSpawn();
+        if (spawn != null && spawn.getX() >= leftX && spawn.getX() <= rightX && spawn.getY() >= upY && spawn.getY() <= downY) {
+            Config.getSprites()[11].drawSprite(gc, ((spawn.getX() * Config.getTileSize()) - camera.getX()), ((spawn.getY() * Config.getTileSize()) - camera.getY()));
+        }
 
         // DRAW COORDINATES
         gc.setFill(Color.BLACK);
