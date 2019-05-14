@@ -8,6 +8,7 @@ import com.teqtrue.engine.model.object.GameObject;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -19,7 +20,10 @@ public class EditorScreen implements IApplicationScreen {
     private Coordinates camera = new Coordinates(0, 0);
     private GameMap gameMap = new GameMap();
     private int selectedObj = 0;
+    private int selectedSpecial = 0;
     private List<Coordinates> tmpPlacement = new ArrayList<>();
+    private int[] specials = new int[]{11, 8};
+    private boolean selectorType = false;
 
     @Override
     public void init(GraphicsContext gc) {
@@ -27,10 +31,25 @@ public class EditorScreen implements IApplicationScreen {
 
         // SCROLL EVENT HANDLER
         gc.getCanvas().getScene().setOnScroll(e -> {
-            if (e.getDeltaY() > 0 && selectedObj > 0) {
-                selectedObj--;
-            } else if (e.getDeltaY() < 0 && selectedObj < (Config.getRegisteredObjects().length - 2)) {
-                selectedObj++;
+            if (e.getDeltaY() > 0) {
+                if (!selectorType && selectedObj > 0) {
+                    selectedObj--;
+                } else if (selectorType && selectedSpecial > 0) {
+                    selectedSpecial--;
+                }
+            } else if (e.getDeltaY() < 0) {
+                if (!selectorType && selectedObj < Config.getRegisteredObjects().length - 1) {
+                    selectedObj++;
+                } else if (selectorType && selectedSpecial < specials.length - 1) {
+                    selectedSpecial++;
+                }
+            }
+        });
+
+        // SELECTOR TYPE SWITCH
+        gc.getCanvas().getScene().addEventHandler(KeyEvent.KEY_PRESSED, e -> {
+            if (e.getCode().equals(KeyCode.E) && !KeyMap.isMousePressed(MouseButton.PRIMARY) && !KeyMap.isMousePressed(MouseButton.SECONDARY)) {
+                selectorType = !selectorType;
             }
         });
 
@@ -45,8 +64,7 @@ public class EditorScreen implements IApplicationScreen {
     private void loop() throws InterruptedException {
         while (true) {
             long tickStart = System.currentTimeMillis();
-            boolean brk = update();
-            if (brk) break;
+            if (update()) break;
             draw();
             long tickDuration = System.currentTimeMillis() - tickStart;
             long timeout = 20 - tickDuration;
@@ -83,46 +101,26 @@ public class EditorScreen implements IApplicationScreen {
         }
         if (KeyMap.isPressed(KeyCode.D)) {
             camera.alterX(speed);
-        }        
+        }
 
         Coordinates mousePos = KeyMap.getMouse();
         int tileX = (int) Math.floor((camera.getX() + mousePos.getX()) / Config.getTileSize());
         int tileY = (int) Math.floor((camera.getY() + mousePos.getY()) / Config.getTileSize());
         Coordinates tile = new Coordinates(tileX, tileY);
-        if (KeyMap.isMousePressed(MouseButton.PRIMARY) && !KeyMap.isMousePressed(MouseButton.SECONDARY)) {
+        if (KeyMap.isMousePressed(MouseButton.PRIMARY) && KeyMap.isMouseSinglePress()) {
             if (!tmpPlacement.contains(tile)) {
                 gameMap.push(tile, selectedObj);
                 tmpPlacement.add(tile);
-                if (Config.getRegisteredObjects()[selectedObj].hasCollision() && gameMap.getSpawn() != null && gameMap.getSpawn().equals(tile)) {
-                    gameMap.unsetSpawn();
-                }
             }
-        } else if (KeyMap.isMousePressed(MouseButton.SECONDARY) && !KeyMap.isMousePressed(MouseButton.PRIMARY)) {
+        } else if (KeyMap.isMousePressed(MouseButton.SECONDARY) && KeyMap.isMouseSinglePress()) {
             if (!tmpPlacement.contains(tile)) {
                 gameMap.pop(tile);
                 tmpPlacement.add(tile);
-                if (gameMap.get(tile) == null  && gameMap.getSpawn() != null && gameMap.getSpawn().equals(tile)) {
-                    gameMap.unsetSpawn();
-                }
             }
+        } else if (KeyMap.isMousePressed(MouseButton.MIDDLE) && KeyMap.isMouseSinglePress()) {
+            gameMap.remove(tile);
         } else if (tmpPlacement.size() > 0) {
             tmpPlacement.clear();
-        }
-
-        if (KeyMap.isPressed(KeyCode.E)) {
-            ArrayList<GameObject> tileData = gameMap.get(tile);
-            if (tileData != null && (gameMap.getSpawn() == null || !gameMap.getSpawn().equals(tile))) {
-                boolean viable = true;
-                for (GameObject obj : tileData) {
-                    if (obj.hasCollision()) {
-                        viable = false;
-                        break;
-                    }
-                }
-                if (viable) {
-                    gameMap.setSpawn(tile);
-                }
-            }
         }
 
         return false;
@@ -161,7 +159,11 @@ public class EditorScreen implements IApplicationScreen {
 
         // DRAW SELECTED OBJECT
         gc.setGlobalAlpha(0.7);
-        Config.getRegisteredObjects()[selectedObj].drawObject(gc, cornerX, cornerY);
+        if (!selectorType) {
+            Config.getRegisteredObjects()[selectedObj].drawObject(gc, cornerX, cornerY);
+        } else {
+            Config.getSprites()[specials[selectedSpecial]].drawSprite(gc, cornerX, cornerY);
+        }
         gc.setGlobalAlpha(1);
 
         // DRAW HIGHLIGHTER
@@ -174,6 +176,8 @@ public class EditorScreen implements IApplicationScreen {
         if (spawn != null && spawn.getX() >= leftX && spawn.getX() <= rightX && spawn.getY() >= upY && spawn.getY() <= downY) {
             Config.getSprites()[11].drawSprite(gc, ((spawn.getX() * Config.getTileSize()) - camera.getX()), ((spawn.getY() * Config.getTileSize()) - camera.getY()));
         }
+
+        // DRAW ENTITITES
 
         // DRAW COORDINATES
         gc.setFill(Color.BLACK);

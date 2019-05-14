@@ -36,7 +36,6 @@ public class Config {
             true,
             true,
             true,
-            true,
             true
         };
 

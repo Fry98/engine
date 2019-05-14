@@ -42,6 +42,10 @@ public class KeyMap {
         return mouse.contains(button);
     }
 
+    public static boolean isMouseSinglePress() {
+        return (mouse.size() == 1);
+    }
+
     public static void setMousePosition(double x, double y) {
         mousePosition.setX(x);
         mousePosition.setY(y);
