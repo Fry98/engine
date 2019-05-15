@@ -1,15 +1,19 @@
 package com.teqtrue.engine.model.object.entity;
 
+import com.teqtrue.engine.model.Config;
 import com.teqtrue.engine.model.Coordinates;
+
+import java.io.Serializable;
+
 import com.teqtrue.engine.graphics.Sprite;
 
-public abstract class AEntity implements IEntity {
+public abstract class AEntity implements IEntity, Serializable {
 
     private Coordinates coordinates;
-    private Sprite sprite;
+    private int spriteIndex;
 
-    public AEntity(Coordinates coordinates, Sprite sprite) {
-        this.sprite = sprite;
+    public AEntity(Coordinates coordinates, int sprite) {
+        this.spriteIndex = sprite;
         this.coordinates = coordinates;
     }
 
@@ -24,7 +28,7 @@ public abstract class AEntity implements IEntity {
     }
 
     public Sprite getSprite() {
-        return sprite;
+        return Config.getSprites()[spriteIndex];
     }
 
 }

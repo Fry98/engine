@@ -1,15 +1,15 @@
 package com.teqtrue.engine.model;
 
-import com.teqtrue.engine.model.object.entity.AEntity;
 import com.teqtrue.engine.model.object.entity.IEntity;
 import com.teqtrue.engine.model.object.GameObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GameMap {
+public class GameMap implements Serializable {
     private Map<Coordinates, Integer> objects = new HashMap<>();
     private List<IEntity> entities = new ArrayList<>();
     private Coordinates spawnPoint = null;

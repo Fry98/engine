@@ -6,6 +6,7 @@ import com.teqtrue.engine.model.*;
 import com.teqtrue.engine.model.object.GameObject;
 import com.teqtrue.engine.model.object.entity.IEntity;
 import com.teqtrue.engine.model.object.entity.enemies.BasicEnemy;
+import com.teqtrue.engine.utils.FileUtil;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
@@ -90,7 +91,11 @@ public class EditorScreen implements IApplicationScreen {
             }
         } 
         if (KeyMap.isPressed(KeyCode.S)) {
-            camera.alterY(speed);
+            if (KeyMap.isPressed(KeyCode.CONTROL)) {
+                FileUtil.saveObject(gameMap, "src/main/levels/test.map");
+            } else {
+                camera.alterY(speed);
+            }
         }
         if (KeyMap.isPressed(KeyCode.A)) {
             if (camera.getX() - speed >= 0) {
@@ -101,6 +106,10 @@ public class EditorScreen implements IApplicationScreen {
         }
         if (KeyMap.isPressed(KeyCode.D)) {
             camera.alterX(speed);
+        }
+
+        if (KeyMap.isPressed(KeyCode.CONTROL) && KeyMap.isPressed(KeyCode.L)) {
+            gameMap = FileUtil.loadObject("src/main/levels/test.map", GameMap.class);
         }
 
         Coordinates mousePos = KeyMap.getMouse();
@@ -195,13 +204,13 @@ public class EditorScreen implements IApplicationScreen {
                 case 0:
                     gameMap.setSpawn(tile);
                     break;
-                case 1:
+                default:
                     for (IEntity entity : gameMap.getEntities()) {
                         if (entity.getCoordinates().equals(tile)) {
                             return;
                         }
                     }
-                    gameMap.addEntity(new BasicEnemy(tile, Config.getSprites()[8]));
+                    gameMap.addEntity(new BasicEnemy(tile, specials[selectedSpecial]));
                     break;
             }
         } else {
