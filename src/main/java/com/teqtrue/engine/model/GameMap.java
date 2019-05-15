@@ -1,6 +1,7 @@
 package com.teqtrue.engine.model;
 
 import com.teqtrue.engine.model.object.entity.AEntity;
+import com.teqtrue.engine.model.object.entity.IEntity;
 import com.teqtrue.engine.model.object.GameObject;
 
 import java.util.ArrayList;
@@ -9,17 +10,17 @@ import java.util.List;
 import java.util.Map;
 
 public class GameMap {
-    private Map<Coordinates, ArrayList<Integer>> objects = new HashMap<>();
-    private List<AEntity> entities = new ArrayList<>();
+    private Map<Coordinates, Integer> objects = new HashMap<>();
+    private List<IEntity> entities = new ArrayList<>();
     private Coordinates spawnPoint = null;
 
     // SET
-    public void set(Coordinates coords, ArrayList<Integer> tileData) {
-        objects.put(coords, tileData);
+    public void set(Coordinates coords, Integer tile) {
+        objects.put(coords, tile);
     }
 
-    public void set(int x, int y, ArrayList<Integer> tileData) {
-        set(new Coordinates(x, y), tileData);
+    public void set(int x, int y, Integer tile) {
+        set(new Coordinates(x, y), tile);
     }
 
     // REMOVE
@@ -33,55 +34,20 @@ public class GameMap {
         remove(new Coordinates(x, y));
     }
 
-    // PUSH
-    public void push(Coordinates coords, int objIndex) {
-        if (objects.containsKey(coords)) {
-            objects.get(coords).add(objIndex);
-        } else {
-            ArrayList<Integer> newArray = new ArrayList<>();
-            newArray.add(objIndex);
-            objects.put(coords, newArray);
-        }
-    }
-    
-    public void push(int x, int y, int objIndex) {
-        push(new Coordinates(x, y), objIndex);
-    }
-
-    // POP
-    public void pop(Coordinates coords) {
-        if (objects.containsKey(coords)) {
-            ArrayList<Integer> tile = objects.get(coords);
-            if (tile.size() > 1) {
-                tile.remove(tile.size() - 1);
-            } else {
-                objects.remove(coords);
-            }
-        }
-    }
-
-    public void pop(int x, int y) {
-        pop(new Coordinates(x, y));
-    }
-
     // GET
-    public ArrayList<GameObject> get(Coordinates coords) {
+    public GameObject get(Coordinates coords) {
         if (objects.containsKey(coords)) {
-            ArrayList<Integer> indexList = objects.get(coords);
-            ArrayList<GameObject> objList = new ArrayList<>();
-            for (int item : indexList) {
-                objList.add(Config.getRegisteredObjects()[item]);
-            }
-            return objList;
+            int index = objects.get(coords);
+            return Config.getRegisteredObjects()[index];
         }
         return null;
     }
 
-    public ArrayList<GameObject> get(int x, int y) {
+    public GameObject get(int x, int y) {
         return get(new Coordinates(x, y));
     }
 
-    // SET SPAWN
+    // SPAWN
     public void setSpawn(Coordinates coords) {
         spawnPoint = coords;
     }
@@ -98,7 +64,16 @@ public class GameMap {
         return spawnPoint;
     }
 
-    public List<AEntity> getEntities() {
+    // ENTITIES
+    public List<IEntity> getEntities() {
         return entities;
+    }
+
+    public void addEntity(IEntity entity) {
+        entities.add(entity);
+    }
+
+    public void removeEntity(int index) {
+        entities.remove(index);
     }
 }

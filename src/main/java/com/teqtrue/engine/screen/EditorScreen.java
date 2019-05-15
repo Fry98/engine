@@ -1,10 +1,11 @@
 package com.teqtrue.engine.screen;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.teqtrue.engine.model.*;
 import com.teqtrue.engine.model.object.GameObject;
+import com.teqtrue.engine.model.object.entity.IEntity;
+import com.teqtrue.engine.model.object.entity.enemies.BasicEnemy;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
@@ -21,7 +22,6 @@ public class EditorScreen implements IApplicationScreen {
     private GameMap gameMap = new GameMap();
     private int selectedObj = 0;
     private int selectedSpecial = 0;
-    private List<Coordinates> tmpPlacement = new ArrayList<>();
     private int[] specials = new int[]{11, 8};
     private boolean selectorType = false;
 
@@ -108,19 +108,17 @@ public class EditorScreen implements IApplicationScreen {
         int tileY = (int) Math.floor((camera.getY() + mousePos.getY()) / Config.getTileSize());
         Coordinates tile = new Coordinates(tileX, tileY);
         if (KeyMap.isMousePressed(MouseButton.PRIMARY) && KeyMap.isMouseSinglePress()) {
-            if (!tmpPlacement.contains(tile)) {
-                gameMap.push(tile, selectedObj);
-                tmpPlacement.add(tile);
+            if (!selectorType) {
+                gameMap.set(tile, selectedObj);
+            } else if (selectorType) {
+                handleSpecial(true, tile);
             }
         } else if (KeyMap.isMousePressed(MouseButton.SECONDARY) && KeyMap.isMouseSinglePress()) {
-            if (!tmpPlacement.contains(tile)) {
-                gameMap.pop(tile);
-                tmpPlacement.add(tile);
+            if (!selectorType) {
+                gameMap.remove(tile);
+            } else if (selectorType) {
+                handleSpecial(false, tile);
             }
-        } else if (KeyMap.isMousePressed(MouseButton.MIDDLE) && KeyMap.isMouseSinglePress()) {
-            gameMap.remove(tile);
-        } else if (tmpPlacement.size() > 0) {
-            tmpPlacement.clear();
         }
 
         return false;
@@ -139,13 +137,11 @@ public class EditorScreen implements IApplicationScreen {
 
         for (int x = leftX; x <= rightX; x++) {
             for (int y = upY; y <= downY; y++) {
-                ArrayList<GameObject> objArr = gameMap.get(x, y);
-                if (objArr != null) {
+                GameObject obj = gameMap.get(x, y);
+                if (obj != null) {
                     double cornerX = ((x * Config.getTileSize()) - camera.getX());
                     double cornerY = ((y * Config.getTileSize()) - camera.getY());
-                    for (GameObject obj : objArr) {
-                        obj.drawObject(gc, cornerX, cornerY);
-                    }
+                    obj.drawObject(gc, cornerX, cornerY);
                 }
             }
         }
@@ -178,12 +174,48 @@ public class EditorScreen implements IApplicationScreen {
         }
 
         // DRAW ENTITITES
+        List<IEntity> entities = gameMap.getEntities();
+        for (IEntity entity : entities) {
+            Coordinates entityCoords = entity.getCoordinates();
+            if (entityCoords.getX() >= leftX && entityCoords.getX() <= rightX && entityCoords.getY() >= upY && entityCoords.getY() <= downY) {
+                entity.getSprite().drawSprite(gc, ((entityCoords.getX() * Config.getTileSize()) - camera.getX()), ((entityCoords.getY() * Config.getTileSize()) - camera.getY()));
+            }
+        }
 
         // DRAW COORDINATES
         gc.setFill(Color.BLACK);
         gc.setTextAlign(TextAlignment.LEFT);
         gc.setFont(Font.font("Arial", 15));
         gc.fillText(String.format("X: %d, Y: %d", tileX, tileY), 5, 15);
+    }
+
+    private void handleSpecial(boolean leftClick, Coordinates tile) {
+        if (leftClick) {
+            switch (selectedSpecial) {
+                case 0:
+                    gameMap.setSpawn(tile);
+                    break;
+                case 1:
+                    for (IEntity entity : gameMap.getEntities()) {
+                        if (entity.getCoordinates().equals(tile)) {
+                            return;
+                        }
+                    }
+                    gameMap.addEntity(new BasicEnemy(tile, Config.getSprites()[8]));
+                    break;
+            }
+        } else {
+            if (gameMap.getSpawn() != null && gameMap.getSpawn().equals(tile)) {
+                gameMap.unsetSpawn();
+                return;
+            }
+            List<IEntity> entities = gameMap.getEntities();
+            for (int i = 0; i < entities.size(); i++) {
+                if (entities.get(i).getCoordinates().equals(tile)) {
+                    gameMap.removeEntity(i);
+                }
+            }
+        }
     }
     
     @Override

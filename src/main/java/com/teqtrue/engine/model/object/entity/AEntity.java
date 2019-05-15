@@ -1,15 +1,15 @@
 package com.teqtrue.engine.model.object.entity;
 
 import com.teqtrue.engine.model.Coordinates;
-import com.teqtrue.engine.model.object.GameObject;
 import com.teqtrue.engine.graphics.Sprite;
 
-public abstract class AEntity extends GameObject {
+public abstract class AEntity implements IEntity {
 
     private Coordinates coordinates;
+    private Sprite sprite;
 
     public AEntity(Coordinates coordinates, Sprite sprite) {
-        super(sprite, false);
+        this.sprite = sprite;
         this.coordinates = coordinates;
     }
 
@@ -21,6 +21,10 @@ public abstract class AEntity extends GameObject {
 
     public void setCoordinates(Coordinates coordinates) {
         this.coordinates = coordinates;
+    }
+
+    public Sprite getSprite() {
+        return sprite;
     }
 
 }
