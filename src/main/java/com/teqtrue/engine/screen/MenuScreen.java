@@ -3,6 +3,9 @@ package com.teqtrue.engine.screen;
 import com.teqtrue.engine.model.Config;
 import com.teqtrue.engine.model.Coordinates;
 import com.teqtrue.engine.model.KeyMap;
+
+import javafx.animation.AnimationTimer;
+import javafx.application.Platform;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
@@ -16,6 +19,7 @@ public class MenuScreen implements IApplicationScreen {
     private IApplicationScreen nextScreen;
     private String[] menuItems = {"Start Game", "Editor", "Quit"};
     private int menuItemSelected;
+    private boolean die = false;
 
     @Override
     public void init(GraphicsContext gc) {
@@ -32,20 +36,31 @@ public class MenuScreen implements IApplicationScreen {
     }
 
     private void loop() throws InterruptedException {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                new AnimationTimer() {
+                    public void handle(long currentNanoTime) {
+                        draw();
+                        if (die) this.stop();
+                    }
+                }.start();
+            }
+        });
+        
         while (true) {
             long tickStart = System.currentTimeMillis();
-            boolean brk = update();
-            if (brk) break;
-            draw();
+            update();
             long tickDuration = System.currentTimeMillis() - tickStart;
             long timeout = 20 - tickDuration;
             if (timeout > 0) {
                 Thread.sleep(20 - tickDuration);
             }
+            if (die) break;
         }
     }
 
-    private boolean update() {
+    private void update() {
         Coordinates screenSize = Config.getScreenSize();
         Coordinates mousePos = KeyMap.getMouse();
 
@@ -63,13 +78,20 @@ public class MenuScreen implements IApplicationScreen {
         if (KeyMap.isMousePressed(MouseButton.PRIMARY)) {
             KeyMap.setMousePressed(MouseButton.PRIMARY, true);
             switch (menuItemSelected) {
-                case 0: nextScreen = new GameScreen(); return true;
-                case 1: nextScreen = new EditorScreen(); return true;
-                case 2: nextScreen = new ExitScreen(); return true;
+                case 0:
+                    nextScreen = new GameScreen();
+                    die = true;
+                    break;
+                case 1:
+                    nextScreen = new EditorScreen();
+                    die = true;
+                    break;
+                case 2:
+                    nextScreen = new ExitScreen();
+                    die = true;
+                    break;
             }
         }
-
-        return false;
     }
 
     private void draw() {

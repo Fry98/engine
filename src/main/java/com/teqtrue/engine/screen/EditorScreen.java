@@ -27,7 +27,7 @@ public class EditorScreen implements IApplicationScreen {
     private int selectedSpecial = 0;
     private int[] specials = new int[]{11, 8};
     private boolean selectorType = false;
-    private boolean stop = false;
+    private boolean die = false;
 
     @Override
     public void init(GraphicsContext gc) {
@@ -72,7 +72,7 @@ public class EditorScreen implements IApplicationScreen {
                 new AnimationTimer() {
                     public void handle(long currentNanoTime) {
                         draw();
-                        if (stop) this.stop();
+                        if (die) this.stop();
                     }
                 }.start();
             }
@@ -85,13 +85,13 @@ public class EditorScreen implements IApplicationScreen {
             if (timeout > 0) {
                 Thread.sleep(20 - tickDuration);
             }
-            if (stop) break;
+            if (die) break;
         }
     }
 
     private void update() {
         if (KeyMap.isPressed(KeyCode.ESCAPE)) {
-            stop = true;
+            die = true;
         }
         int speed = 10;
         if (KeyMap.isPressed(KeyCode.SHIFT)) {

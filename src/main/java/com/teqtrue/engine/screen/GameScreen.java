@@ -8,6 +8,9 @@ import com.teqtrue.engine.model.object.GameObject;
 import com.teqtrue.engine.model.object.entity.IEntity;
 import com.teqtrue.engine.model.object.entity.Player;
 import com.teqtrue.engine.utils.FileUtil;
+
+import javafx.animation.AnimationTimer;
+import javafx.application.Platform;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
@@ -18,6 +21,7 @@ public class GameScreen implements IApplicationScreen {
     private GameMap gameMap;
     private Coordinates camera;
     private Player player;
+    private boolean die;
 
     @Override
     public void init(GraphicsContext gc) {
@@ -38,21 +42,34 @@ public class GameScreen implements IApplicationScreen {
     }
 
     private void loop() throws InterruptedException {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                new AnimationTimer() {
+                    public void handle(long currentNanoTime) {
+                        draw();
+                        if (die) this.stop();
+                    }
+                }.start();
+            }
+        });
         while (true) {
             long tickStart = System.currentTimeMillis();
-            if (update()) break;
-            draw();
+            update();
             long tickDuration = System.currentTimeMillis() - tickStart;
             long timeout = 20 - tickDuration;
             if (timeout > 0) {
                 Thread.sleep(20 - tickDuration);
             }
+            if (die) {
+                break;
+            }
         }
     }
 
-    private boolean update() {
+    private void update() {
         if (KeyMap.isPressed(KeyCode.ESCAPE)) {
-            return true;
+            die = true;
         }
 
         for (IEntity e : gameMap.getEntities()) {
@@ -61,8 +78,6 @@ public class GameScreen implements IApplicationScreen {
 
         camera.setX(player.getCoordinates().getX() * Config.getTileSize() - Config.getScreenSize().getX()/2);
         camera.setY(player.getCoordinates().getY() * Config.getTileSize() - Config.getScreenSize().getY()/2);
-
-        return false;
     }
 
     private void draw() {
