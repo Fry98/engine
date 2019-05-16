@@ -13,6 +13,7 @@ public abstract class AEntity implements IEntity, Serializable {
     private int spriteIndex;
     private double speed;
     private double orientation;
+    private static final long serialVersionUID = 1L;
 
     public AEntity(Coordinates coordinates, int sprite, double speed) {
         this.spriteIndex = sprite;

@@ -6,6 +6,7 @@ import java.util.Objects;
 public class Coordinates implements Serializable {
 
     private double x, y;
+    private static final long serialVersionUID = 1L;
 
     public Coordinates(double x, double y) {
         this.x = x;

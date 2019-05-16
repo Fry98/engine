@@ -13,6 +13,7 @@ public class GameMap implements Serializable {
     private Map<Coordinates, Integer> objects = new HashMap<>();
     private List<IEntity> entities = new ArrayList<>();
     private Coordinates spawnPoint = null;
+    private static final long serialVersionUID = 1L;
 
     // SET
     public void set(Coordinates coords, Integer tile) {
