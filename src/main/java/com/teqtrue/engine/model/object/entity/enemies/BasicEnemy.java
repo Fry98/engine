@@ -7,7 +7,7 @@ import com.teqtrue.engine.graphics.Sprite;
 public class BasicEnemy extends AEntity {
 
     public BasicEnemy(Coordinates coordinates, int sprite) {
-        super(coordinates, sprite);
+        super(coordinates, sprite, 5);
     }
 
     @Override

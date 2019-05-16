@@ -1,7 +1,9 @@
 package com.teqtrue.engine.graphics;
 
+import com.teqtrue.engine.model.Config;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.transform.Rotate;
 
 public class Sprite {
 
@@ -34,7 +36,13 @@ public class Sprite {
         this.sh = sh;
     }
 
-    public void drawSprite(GraphicsContext gc, double x, double y) {
+    public void drawSprite(GraphicsContext gc, double x, double y, double r) {
+        gc.save();
+        if (r != 0) {
+            Rotate rot = new Rotate(r, x + Config.getTileSize() / 2.0, y + Config.getTileSize() / 2.0);
+            gc.transform(rot.getMxx(), rot.getMyx(), rot.getMxy(), rot.getMyy(), rot.getTx(), rot.getTy());
+        }
         gc.drawImage(image, sx, sy, sw, sh, x, y, sw, sh);
+        gc.restore();
     }
 }

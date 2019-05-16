@@ -57,4 +57,9 @@ public class Coordinates implements Serializable {
         return Objects.hash(x, y);
     }
 
+    @Override
+    public String toString() {
+        return String.format("%.1f; %.1f", x, y);
+    }
+
 }
