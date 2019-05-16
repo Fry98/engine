@@ -36,6 +36,10 @@ public class Sprite {
         this.sh = sh;
     }
 
+    public void drawSprite(GraphicsContext gc, double x, double y) {
+        gc.drawImage(image, sx, sy, sw, sh, x, y, sw, sh);
+    }
+
     public void drawSprite(GraphicsContext gc, double x, double y, double r) {
         gc.save();
         if (r != 0) {

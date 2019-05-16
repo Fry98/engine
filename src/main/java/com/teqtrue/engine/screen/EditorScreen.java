@@ -167,7 +167,7 @@ public class EditorScreen implements IApplicationScreen {
         if (!selectorType) {
             Config.getRegisteredObjects()[selectedObj].drawObject(gc, cornerX, cornerY);
         } else {
-            Config.getSprites()[specials[selectedSpecial]].drawSprite(gc, cornerX, cornerY, 0);
+            Config.getSprites()[specials[selectedSpecial]].drawSprite(gc, cornerX, cornerY);
         }
         gc.setGlobalAlpha(1);
 
@@ -179,7 +179,7 @@ public class EditorScreen implements IApplicationScreen {
         // DRAW SPAWN POINT
         Coordinates spawn = gameMap.getSpawn();
         if (spawn != null && spawn.getX() >= leftX && spawn.getX() <= rightX && spawn.getY() >= upY && spawn.getY() <= downY) {
-            Config.getSprites()[11].drawSprite(gc, ((spawn.getX() * Config.getTileSize()) - camera.getX()), ((spawn.getY() * Config.getTileSize()) - camera.getY()), 0);
+            Config.getSprites()[11].drawSprite(gc, ((spawn.getX() * Config.getTileSize()) - camera.getX()), ((spawn.getY() * Config.getTileSize()) - camera.getY()));
         }
 
         // DRAW ENTITITES
@@ -187,7 +187,7 @@ public class EditorScreen implements IApplicationScreen {
         for (IEntity entity : entities) {
             Coordinates entityCoords = entity.getCoordinates();
             if (entityCoords.getX() >= leftX && entityCoords.getX() <= rightX && entityCoords.getY() >= upY && entityCoords.getY() <= downY) {
-                entity.getSprite().drawSprite(gc, ((entityCoords.getX() * Config.getTileSize()) - camera.getX()), ((entityCoords.getY() * Config.getTileSize()) - camera.getY()), 0);
+                entity.getSprite().drawSprite(gc, ((entityCoords.getX() * Config.getTileSize()) - camera.getX()), ((entityCoords.getY() * Config.getTileSize()) - camera.getY()));
             }
         }
 

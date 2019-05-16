@@ -23,7 +23,7 @@ public class GameObject {
     }
 
     public void drawObject(GraphicsContext gc, double x, double y) {
-        sprite.drawSprite(gc, x, y, 0);
+        sprite.drawSprite(gc, x, y);
     }
 
     public boolean hasCollision() {
