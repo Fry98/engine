@@ -6,5 +6,4 @@ public interface IApplicationScreen {
 
     public void init(GraphicsContext gc);
     public IApplicationScreen getNextScreen();
-
 }

@@ -7,7 +7,6 @@ import com.teqtrue.engine.model.KeyMap;
 import com.teqtrue.engine.model.object.GameObject;
 import com.teqtrue.engine.model.object.entity.IEntity;
 import com.teqtrue.engine.model.object.entity.instances.Player;
-import com.teqtrue.engine.utils.FileUtil;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
@@ -15,7 +14,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 
-public class GameScreen implements IApplicationScreen {
+public class GameScreen implements IMapLoaderScreen {
 
     private GraphicsContext gc;
     private GameMap gameMap;
@@ -26,7 +25,6 @@ public class GameScreen implements IApplicationScreen {
     @Override
     public void init(GraphicsContext gc) {
         this.gc = gc;
-        this.gameMap = FileUtil.loadObject("src/main/levels/test.map", GameMap.class);
         this.player = (Player) this.gameMap.getEntities().stream().filter(e -> e instanceof Player).findAny().orElse(null);
         if (this.player == null) {
             this.player = new Player(gameMap.getSpawn());
@@ -110,12 +108,16 @@ public class GameScreen implements IApplicationScreen {
                 entity.getSprite().drawSprite(gc, ((entityCoords.getX() * Config.getTileSize()) - camera.getX()), ((entityCoords.getY() * Config.getTileSize()) - camera.getY()), entity.getOrientation());
             }
         }
-        System.out.println();
     }
 
     @Override
     public IApplicationScreen getNextScreen() {
-        return new MenuScreen();
+        return new LevelSelectScreen(new GameScreen(), false);
+    }
+
+    @Override
+    public void loadMapData(GameMap map) {
+        gameMap = map;
     }
 
 }

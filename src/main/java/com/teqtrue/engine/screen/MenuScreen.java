@@ -2,6 +2,7 @@ package com.teqtrue.engine.screen;
 
 import com.teqtrue.engine.model.Config;
 import com.teqtrue.engine.model.Coordinates;
+import com.teqtrue.engine.model.GameMap;
 import com.teqtrue.engine.model.KeyMap;
 
 import javafx.animation.AnimationTimer;
@@ -17,7 +18,7 @@ public class MenuScreen implements IApplicationScreen {
 
     private GraphicsContext gc;
     private IApplicationScreen nextScreen;
-    private String[] menuItems = {"Start Game", "Editor", "Quit"};
+    private String[] menuItems = { "Start Game", "Editor", "Quit" };
     private int menuItemSelected;
     private boolean die = false;
 
@@ -42,12 +43,13 @@ public class MenuScreen implements IApplicationScreen {
                 new AnimationTimer() {
                     public void handle(long currentNanoTime) {
                         draw();
-                        if (die) this.stop();
+                        if (die)
+                            this.stop();
                     }
                 }.start();
             }
         });
-        
+
         while (true) {
             long tickStart = System.currentTimeMillis();
             update();
@@ -56,7 +58,8 @@ public class MenuScreen implements IApplicationScreen {
             if (timeout > 0) {
                 Thread.sleep(20 - tickDuration);
             }
-            if (die) break;
+            if (die)
+                break;
         }
     }
 
@@ -66,7 +69,8 @@ public class MenuScreen implements IApplicationScreen {
 
         // MENU ITEM HIGHLIGHT
         if (mousePos.getX() > screenSize.getX() * 0.35 && mousePos.getX() < screenSize.getX() * 0.65) {
-            if (mousePos.getY() < screenSize.getY() / 2 - 40 || mousePos.getY() > screenSize.getY() / 2 + 70 * (menuItems.length-1)) {
+            if (mousePos.getY() < screenSize.getY() / 2 - 40
+                    || mousePos.getY() > screenSize.getY() / 2 + 70 * (menuItems.length - 1)) {
                 menuItemSelected = -1;
             } else {
                 menuItemSelected = ((int) ((mousePos.getY() - screenSize.getY() / 2 + 40) / 70));
@@ -78,18 +82,18 @@ public class MenuScreen implements IApplicationScreen {
         if (KeyMap.isMousePressed(MouseButton.PRIMARY)) {
             KeyMap.setMousePressed(MouseButton.PRIMARY, true);
             switch (menuItemSelected) {
-                case 0:
-                    nextScreen = new GameScreen();
-                    die = true;
-                    break;
-                case 1:
-                    nextScreen = new EditorScreen();
-                    die = true;
-                    break;
-                case 2:
-                    nextScreen = new ExitScreen();
-                    die = true;
-                    break;
+            case 0:
+                nextScreen = new LevelSelectScreen(new GameScreen(), false);
+                die = true;
+                break;
+            case 1:
+                nextScreen = new LevelSelectScreen(new EditorScreen(), true);
+                die = true;
+                break;
+            case 2:
+                nextScreen = new ExitScreen();
+                die = true;
+                break;
             }
         }
     }
@@ -105,7 +109,7 @@ public class MenuScreen implements IApplicationScreen {
         gc.setFill(Color.BLACK);
         gc.setTextAlign(TextAlignment.CENTER);
         gc.setFont(Font.font("Arial", 70));
-        gc.fillText("THE GAME", gc.getCanvas().getWidth()/ 2, gc.getCanvas().getHeight() / 5);
+        gc.fillText("THE GAME", gc.getCanvas().getWidth() / 2, gc.getCanvas().getHeight() / 5);
 
         // BUTTONS
         gc.setFill(Color.BLACK);
@@ -116,7 +120,7 @@ public class MenuScreen implements IApplicationScreen {
             } else {
                 gc.setFont(Font.font("Arial", FontWeight.NORMAL, 40));
             }
-            gc.fillText(menuItems[i], screenSize.getX() / 2, screenSize.getY() / 2 + i*70);
+            gc.fillText(menuItems[i], screenSize.getX() / 2, screenSize.getY() / 2 + i * 70);
         }
     }
 
@@ -124,5 +128,4 @@ public class MenuScreen implements IApplicationScreen {
     public IApplicationScreen getNextScreen() {
         return nextScreen;
     }
-
 }

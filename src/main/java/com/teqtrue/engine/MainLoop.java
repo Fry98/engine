@@ -1,6 +1,7 @@
 package com.teqtrue.engine;
 
 import com.teqtrue.engine.model.Config;
+import com.teqtrue.engine.model.KeyMap;
 import com.teqtrue.engine.screen.IApplicationScreen;
 
 import com.teqtrue.engine.screen.MenuScreen;
@@ -18,6 +19,7 @@ public class MainLoop implements Runnable {
         IApplicationScreen screen = new MenuScreen();
         Config.init();
         while (true) {
+            KeyMap.clear();
             screen.init(gc);
             screen = screen.getNextScreen();
         }

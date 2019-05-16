@@ -7,7 +7,7 @@ public class FileUtil {
     public static void saveObject(Object object, String fileName) {
         ObjectOutputStream out;
         try {
-            out = new ObjectOutputStream(new FileOutputStream(fileName));
+            out = new ObjectOutputStream(new FileOutputStream("src/main/levels/" + fileName));
             out.writeObject(object);
             out.close();
         } catch (IOException e) {
@@ -18,7 +18,7 @@ public class FileUtil {
     public static <T> T loadObject(String fileName, Class<T> clazz) {
         ObjectInputStream in;
         try {
-            in = new ObjectInputStream(new FileInputStream(fileName));
+            in = new ObjectInputStream(new FileInputStream("src/main/levels/" + fileName));
             T sz = clazz.cast(in.readObject());
             in.close();                
             return sz;

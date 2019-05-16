@@ -57,5 +57,6 @@ public class KeyMap {
 
     public static void clear() {
         keys.clear();
+        mouse.clear();
     }
 }

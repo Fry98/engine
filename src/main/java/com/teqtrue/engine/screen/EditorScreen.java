@@ -19,11 +19,11 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 
-public class EditorScreen implements IApplicationScreen {
+public class EditorScreen implements IMapLoaderScreen {
 
     private GraphicsContext gc;
     private Coordinates camera = new Coordinates(0, 0);
-    private GameMap gameMap = new GameMap();
+    private GameMap gameMap ;
     private int selectedObj = 0;
     private int selectedSpecial = 0;
     private int[] specials = new int[]{11, 8};
@@ -108,15 +108,16 @@ public class EditorScreen implements IApplicationScreen {
         } 
         if (KeyMap.isPressed(KeyCode.S)) {
             if (KeyMap.isPressed(KeyCode.CONTROL)) {
-                System.out.println("here");
-                freeze();
-                EditorScreen me = this;
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        SaveScreen.showDialog(me);
-                    }
-                });
+                if (gameMap.getSpawn() != null) {
+                    freeze();
+                    EditorScreen me = this;
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            SaveScreen.showDialog(me);
+                        }
+                    });
+                }
             } else {
                 camera.alterY(speed);
             }
@@ -268,6 +269,11 @@ public class EditorScreen implements IApplicationScreen {
     
     @Override
     public IApplicationScreen getNextScreen() {
-        return new MenuScreen();
+        return new LevelSelectScreen(new EditorScreen(), true);
+    }
+
+    @Override
+    public void loadMapData(GameMap map) {
+        gameMap = map;
     }
 }
