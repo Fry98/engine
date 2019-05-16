@@ -8,6 +8,8 @@ import com.teqtrue.engine.model.object.entity.IEntity;
 import com.teqtrue.engine.model.object.entity.enemies.BasicEnemy;
 import com.teqtrue.engine.utils.FileUtil;
 
+import javafx.animation.AnimationTimer;
+import javafx.application.Platform;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -25,6 +27,7 @@ public class EditorScreen implements IApplicationScreen {
     private int selectedSpecial = 0;
     private int[] specials = new int[]{11, 8};
     private boolean selectorType = false;
+    private boolean stop = false;
 
     @Override
     public void init(GraphicsContext gc) {
@@ -63,21 +66,32 @@ public class EditorScreen implements IApplicationScreen {
     }
 
     private void loop() throws InterruptedException {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                new AnimationTimer() {
+                    public void handle(long currentNanoTime) {
+                        draw();
+                        if (stop) this.stop();
+                    }
+                }.start();
+            }
+        });
         while (true) {
             long tickStart = System.currentTimeMillis();
-            if (update()) break;
-            draw();
+            update();
             long tickDuration = System.currentTimeMillis() - tickStart;
             long timeout = 20 - tickDuration;
             if (timeout > 0) {
                 Thread.sleep(20 - tickDuration);
             }
+            if (stop) break;
         }
     }
 
-    private boolean update() {
+    private void update() {
         if (KeyMap.isPressed(KeyCode.ESCAPE)) {
-            return true;
+            stop = true;
         }
         int speed = 10;
         if (KeyMap.isPressed(KeyCode.SHIFT)) {
@@ -129,8 +143,6 @@ public class EditorScreen implements IApplicationScreen {
                 handleSpecial(false, tile);
             }
         }
-
-        return false;
     }
 
     private void draw() {
