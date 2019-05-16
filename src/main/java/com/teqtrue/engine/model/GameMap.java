@@ -13,6 +13,7 @@ public class GameMap implements Serializable {
     private Map<Coordinates, Integer> objects = new HashMap<>();
     private List<IEntity> entities = new ArrayList<>();
     private Coordinates spawnPoint = null;
+    private String name;
     private static final long serialVersionUID = 1L;
 
     // SET
@@ -76,5 +77,14 @@ public class GameMap implements Serializable {
 
     public void removeEntity(int index) {
         entities.remove(index);
+    }
+
+    // LEVEL NAME
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 }

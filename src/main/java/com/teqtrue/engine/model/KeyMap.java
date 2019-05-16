@@ -54,4 +54,8 @@ public class KeyMap {
     public static Coordinates getMouse() {
         return mousePosition;
     }
+
+    public static void clear() {
+        keys.clear();
+    }
 }

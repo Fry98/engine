@@ -6,7 +6,7 @@ import com.teqtrue.engine.model.GameMap;
 import com.teqtrue.engine.model.KeyMap;
 import com.teqtrue.engine.model.object.GameObject;
 import com.teqtrue.engine.model.object.entity.IEntity;
-import com.teqtrue.engine.model.object.entity.Player;
+import com.teqtrue.engine.model.object.entity.instances.Player;
 import com.teqtrue.engine.utils.FileUtil;
 
 import javafx.animation.AnimationTimer;

@@ -1,6 +1,7 @@
-package com.teqtrue.engine.model.object.entity;
+package com.teqtrue.engine.model.object.entity.instances;
 
 import com.teqtrue.engine.model.Coordinates;
+import com.teqtrue.engine.model.object.entity.AEntity;
 
 public class Player extends AEntity {
 

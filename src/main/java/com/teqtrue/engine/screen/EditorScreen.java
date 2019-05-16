@@ -5,8 +5,8 @@ import java.util.List;
 import com.teqtrue.engine.model.*;
 import com.teqtrue.engine.model.object.GameObject;
 import com.teqtrue.engine.model.object.entity.IEntity;
-import com.teqtrue.engine.model.object.entity.enemies.BasicEnemy;
-import com.teqtrue.engine.utils.FileUtil;
+import com.teqtrue.engine.model.object.entity.instances.BasicEnemy;
+import com.teqtrue.engine.utils.SaveScreen;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
@@ -16,6 +16,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 
 public class EditorScreen implements IApplicationScreen {
@@ -27,6 +28,7 @@ public class EditorScreen implements IApplicationScreen {
     private int selectedSpecial = 0;
     private int[] specials = new int[]{11, 8};
     private boolean selectorType = false;
+    private boolean freeze = false;
     private boolean die = false;
 
     @Override
@@ -71,7 +73,7 @@ public class EditorScreen implements IApplicationScreen {
             public void run() {
                 new AnimationTimer() {
                     public void handle(long currentNanoTime) {
-                        draw();
+                        if (!freeze) draw();
                         if (die) this.stop();
                     }
                 }.start();
@@ -79,7 +81,7 @@ public class EditorScreen implements IApplicationScreen {
         });
         while (true) {
             long tickStart = System.currentTimeMillis();
-            update();
+            if (!freeze) update();
             long tickDuration = System.currentTimeMillis() - tickStart;
             long timeout = 20 - tickDuration;
             if (timeout > 0) {
@@ -106,7 +108,15 @@ public class EditorScreen implements IApplicationScreen {
         } 
         if (KeyMap.isPressed(KeyCode.S)) {
             if (KeyMap.isPressed(KeyCode.CONTROL)) {
-                FileUtil.saveObject(gameMap, "src/main/levels/test.map");
+                System.out.println("here");
+                freeze();
+                EditorScreen me = this;
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        SaveScreen.showDialog(me);
+                    }
+                });
             } else {
                 camera.alterY(speed);
             }
@@ -120,10 +130,6 @@ public class EditorScreen implements IApplicationScreen {
         }
         if (KeyMap.isPressed(KeyCode.D)) {
             camera.alterX(speed);
-        }
-
-        if (KeyMap.isPressed(KeyCode.CONTROL) && KeyMap.isPressed(KeyCode.L)) {
-            gameMap = FileUtil.loadObject("src/main/levels/test.map", GameMap.class);
         }
 
         Coordinates mousePos = KeyMap.getMouse();
@@ -208,6 +214,7 @@ public class EditorScreen implements IApplicationScreen {
         gc.setTextAlign(TextAlignment.LEFT);
         gc.setFont(Font.font("Arial", 15));
         gc.fillText(String.format("X: %d, Y: %d", tileX, tileY), 5, 15);
+        
     }
 
     private void handleSpecial(boolean leftClick, Coordinates tile) {
@@ -237,6 +244,26 @@ public class EditorScreen implements IApplicationScreen {
                 }
             }
         }
+    }
+
+    private void freeze() {
+        freeze = true;
+        gc.setGlobalAlpha(0.5);
+        gc.setFill(Color.WHITE);
+        gc.fillRect(0, 0, Config.getScreenSize().getX(), Config.getScreenSize().getY());
+        gc.setGlobalAlpha(1);
+        gc.setFont(Font.font("Arial", FontWeight.BOLD, 30));
+        gc.setFill(Color.web("#2c59a0"));
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.fillText("PAUSED", Config.getScreenSize().getX() / 2, Config.getScreenSize().getY() / 2);    
+    }
+
+    public void restore() {
+        freeze = false;
+    }
+
+    public GameMap getMap() {
+        return gameMap;
     }
     
     @Override

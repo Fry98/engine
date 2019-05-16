@@ -1,4 +1,4 @@
-package com.teqtrue.engine.model.object.entity.enemies;
+package com.teqtrue.engine.model.object.entity.instances;
 
 import com.teqtrue.engine.model.Coordinates;
 import com.teqtrue.engine.model.object.entity.AEntity;

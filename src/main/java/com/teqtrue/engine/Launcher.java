@@ -30,7 +30,6 @@ public class Launcher extends Application {
         scene.setCursor(Cursor.HAND);
 
         scene.setOnMouseMoved(e -> KeyMap.setMousePosition(e.getX(), e.getY()));
-
         scene.setOnMouseDragged(e -> KeyMap.setMousePosition(e.getX(), e.getY()));
 
         scene.setOnMousePressed(e -> KeyMap.setMousePressed(e.getButton(), false));
