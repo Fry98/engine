@@ -10,6 +10,7 @@ import com.teqtrue.engine.model.object.entity.instances.Player;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
+import javafx.scene.Cursor;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
@@ -26,21 +27,27 @@ public class GameScreen implements IMapLoaderScreen {
 
     @Override
     public void init(GraphicsContext gc) {
+
+        // GraphicsContext SETUP
         gc.setStroke(Color.RED);
         gc.setLineWidth(1);
+        gc.getCanvas().getScene().setCursor(Cursor.NONE);
         this.gc = gc;
-        this.player = (Player) this.gameMap.getEntities().stream().filter(e -> e instanceof Player).findAny().orElse(null);
-        if (this.player == null) {
-            this.player = new Player(gameMap.getSpawn());
-            this.gameMap.addEntity(this.player);
-        }
+
+        // PLAYER SETUP
+        this.player = new Player(gameMap.getSpawn());
+        this.gameMap.addEntity(this.player);
         this.camera = this.player.getCoordinates();
 
+        // LOOP BOOTSTRAP
         try {
             loop();
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        // GraphicsContext RESET
+        gc.getCanvas().getScene().setCursor(Cursor.HAND);
     }
 
     private void loop() throws InterruptedException {
@@ -104,6 +111,14 @@ public class GameScreen implements IMapLoaderScreen {
             }
         }
 
+        // DRAW ENTITITES
+        for (IEntity entity : gameMap.getEntities()) {
+            Coordinates entityCoords = entity.getCoordinates();
+            if (entityCoords.getX() >= leftX && entityCoords.getX() <= rightX && entityCoords.getY() >= upY && entityCoords.getY() <= downY) {
+                entity.getSprite().drawSprite(gc, ((entityCoords.getX() * Config.getTileSize()) - camera.getX() - Config.getTileSize() / 2), ((entityCoords.getY() * Config.getTileSize()) - camera.getY() - Config.getTileSize() / 2), entity.getOrientation());
+            }
+        }
+
         // DRAW LASER SIGHT
         Coordinates mousePos = KeyMap.getMouse();
         double mouseCenteredX = mousePos.getX() - screenWidth / 2;
@@ -151,14 +166,8 @@ public class GameScreen implements IMapLoaderScreen {
         }
         
         gc.strokeLine(screenWidth / 2, screenHeight / 2, lineEndX + screenWidth / 2, lineEndY + screenHeight / 2);
-
-        // DRAW ENTITITES
-        for (IEntity entity : gameMap.getEntities()) {
-            Coordinates entityCoords = entity.getCoordinates();
-            if (entityCoords.getX() >= leftX && entityCoords.getX() <= rightX && entityCoords.getY() >= upY && entityCoords.getY() <= downY) {
-                entity.getSprite().drawSprite(gc, ((entityCoords.getX() * Config.getTileSize()) - camera.getX() - Config.getTileSize() / 2), ((entityCoords.getY() * Config.getTileSize()) - camera.getY() - Config.getTileSize() / 2), entity.getOrientation());
-            }
-        }
+    
+        // DRAW SCOPE
     }
 
     @Override
