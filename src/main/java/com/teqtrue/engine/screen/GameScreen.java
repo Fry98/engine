@@ -83,8 +83,8 @@ public class GameScreen implements IMapLoaderScreen {
             e.update();
         }
 
-        camera.setX(player.getCoordinates().getX() * Config.getTileSize() - Config.getScreenSize().getX()/2);
-        camera.setY(player.getCoordinates().getY() * Config.getTileSize() - Config.getScreenSize().getY()/2);
+        camera.setX(player.getCoordinates().getX() * Config.getTileSize() - Config.getScreenSize().getX()/2 + Config.getTileSize() / 2);
+        camera.setY(player.getCoordinates().getY() * Config.getTileSize() - Config.getScreenSize().getY()/2 + Config.getTileSize() / 2);
     }
 
     private void draw() {
@@ -161,7 +161,7 @@ public class GameScreen implements IMapLoaderScreen {
         for (IEntity entity : gameMap.getEntities()) {
             Coordinates entityCoords = entity.getCoordinates();
             if (entityCoords.getX() >= leftX && entityCoords.getX() <= rightX && entityCoords.getY() >= upY && entityCoords.getY() <= downY) {
-                entity.getSprite().drawSprite(gc, ((entityCoords.getX() * Config.getTileSize()) - camera.getX() - Config.getTileSize() / 2), ((entityCoords.getY() * Config.getTileSize()) - camera.getY() - Config.getTileSize() / 2), entity.getOrientation());
+                entity.getSprite().drawSprite(gc, (entityCoords.getX() * Config.getTileSize()) - camera.getX(), (entityCoords.getY() * Config.getTileSize()) - camera.getY(), entity.getOrientation());
             }
         }
     
