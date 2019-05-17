@@ -49,9 +49,13 @@ public class LevelSelectScreen implements IApplicationScreen {
         File folder = new File("src/main/levels");
         files = new ArrayList<>(Arrays.asList(folder.listFiles()));
 
-        for (File file : files) {
-            if (!file.getName().endsWith(".map")) continue;
-            levels.add(FileUtil.loadObject(file.getName(), GameMap.class));
+        for (int i = 0; i < files.size(); i++) {
+            if (!files.get(i).getName().endsWith(".map")) {
+                files.remove(i);
+                i--;
+                continue;
+            }
+            levels.add(FileUtil.loadObject(files.get(i).getName(), GameMap.class));
         }
 
         EventHandler<MouseEvent> mouseHandler = new EventHandler<MouseEvent>() {            
