@@ -21,9 +21,13 @@ public class GameScreen implements IMapLoaderScreen {
     private Coordinates camera;
     private Player player;
     private boolean die;
+    private double screenWidth = Config.getScreenSize().getX();
+    private double screenHeight = Config.getScreenSize().getY();
 
     @Override
     public void init(GraphicsContext gc) {
+        gc.setStroke(Color.RED);
+        gc.setLineWidth(1);
         this.gc = gc;
         this.player = (Player) this.gameMap.getEntities().stream().filter(e -> e instanceof Player).findAny().orElse(null);
         if (this.player == null) {
@@ -100,12 +104,59 @@ public class GameScreen implements IMapLoaderScreen {
             }
         }
 
+        // DRAW LASER SIGHT
+        Coordinates mousePos = KeyMap.getMouse();
+        double mouseCenteredX = mousePos.getX() - screenWidth / 2;
+        double mouseCenteredY = mousePos.getY() - screenHeight / 2;
+
+        double[] dist = new double[4];
+        dist[0] = mousePos.getX();
+        dist[1] = mousePos.getY();
+        dist[2] = screenWidth - dist[0];
+        dist[3] = screenHeight - dist[1];
+
+        int closest = -1;
+
+        for (int i = 0; i < 4; i++) {
+            if (closest == -1 || dist[i] < dist[closest]) {
+                closest = i;
+            }
+        }
+
+        double lineEndX = 0;
+        double lineEndY = 0;
+        double ratio = 0;
+
+        switch(closest) {
+            case 0:
+                ratio = mouseCenteredY / mouseCenteredX;
+                lineEndX = -(screenWidth / 2);
+                lineEndY = lineEndX * ratio;
+                break;
+            case 1:
+                ratio = mouseCenteredX / mouseCenteredY;
+                lineEndY = -(screenHeight / 2);
+                lineEndX = lineEndY * ratio;
+                break;
+            case 2:
+                ratio = mouseCenteredY / mouseCenteredX;
+                lineEndX = screenWidth / 2;
+                lineEndY = lineEndX * ratio;
+                break;
+            case 3:
+                ratio = mouseCenteredX / mouseCenteredY;
+                lineEndY = screenHeight / 2;
+                lineEndX = lineEndY * ratio;
+                break;
+        }
+        
+        gc.strokeLine(screenWidth / 2, screenHeight / 2, lineEndX + screenWidth / 2, lineEndY + screenHeight / 2);
+
         // DRAW ENTITITES
         for (IEntity entity : gameMap.getEntities()) {
             Coordinates entityCoords = entity.getCoordinates();
-            System.out.printf("%s %.1f\n", entityCoords, entity.getOrientation());
             if (entityCoords.getX() >= leftX && entityCoords.getX() <= rightX && entityCoords.getY() >= upY && entityCoords.getY() <= downY) {
-                entity.getSprite().drawSprite(gc, ((entityCoords.getX() * Config.getTileSize()) - camera.getX()), ((entityCoords.getY() * Config.getTileSize()) - camera.getY()), entity.getOrientation());
+                entity.getSprite().drawSprite(gc, ((entityCoords.getX() * Config.getTileSize()) - camera.getX() - Config.getTileSize() / 2), ((entityCoords.getY() * Config.getTileSize()) - camera.getY() - Config.getTileSize() / 2), entity.getOrientation());
             }
         }
     }
