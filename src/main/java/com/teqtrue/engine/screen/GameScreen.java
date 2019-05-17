@@ -70,9 +70,7 @@ public class GameScreen implements IMapLoaderScreen {
             if (timeout > 0) {
                 Thread.sleep(20 - tickDuration);
             }
-            if (die) {
-                break;
-            }
+            if (die) break;
         }
     }
 
@@ -108,14 +106,6 @@ public class GameScreen implements IMapLoaderScreen {
                     double cornerY = ((y * Config.getTileSize()) - camera.getY());
                     obj.drawObject(gc, cornerX, cornerY);
                 }
-            }
-        }
-
-        // DRAW ENTITITES
-        for (IEntity entity : gameMap.getEntities()) {
-            Coordinates entityCoords = entity.getCoordinates();
-            if (entityCoords.getX() >= leftX && entityCoords.getX() <= rightX && entityCoords.getY() >= upY && entityCoords.getY() <= downY) {
-                entity.getSprite().drawSprite(gc, ((entityCoords.getX() * Config.getTileSize()) - camera.getX() - Config.getTileSize() / 2), ((entityCoords.getY() * Config.getTileSize()) - camera.getY() - Config.getTileSize() / 2), entity.getOrientation());
             }
         }
 
@@ -166,6 +156,14 @@ public class GameScreen implements IMapLoaderScreen {
         }
         
         gc.strokeLine(screenWidth / 2, screenHeight / 2, lineEndX + screenWidth / 2, lineEndY + screenHeight / 2);
+
+        // DRAW ENTITITES
+        for (IEntity entity : gameMap.getEntities()) {
+            Coordinates entityCoords = entity.getCoordinates();
+            if (entityCoords.getX() >= leftX && entityCoords.getX() <= rightX && entityCoords.getY() >= upY && entityCoords.getY() <= downY) {
+                entity.getSprite().drawSprite(gc, ((entityCoords.getX() * Config.getTileSize()) - camera.getX() - Config.getTileSize() / 2), ((entityCoords.getY() * Config.getTileSize()) - camera.getY() - Config.getTileSize() / 2), entity.getOrientation());
+            }
+        }
     
         // DRAW SCOPE
     }

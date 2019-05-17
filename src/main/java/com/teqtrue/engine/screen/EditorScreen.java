@@ -18,15 +18,16 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
+import javafx.event.EventHandler;
 
 public class EditorScreen implements IMapLoaderScreen {
 
     private GraphicsContext gc;
     private Coordinates camera = new Coordinates(0, 0);
-    private GameMap gameMap ;
+    private GameMap gameMap;
     private int selectedObj = 0;
     private int selectedSpecial = 0;
-    private int[] specials = new int[]{11, 8};
+    private int[] specials = new int[] {11, 8};
     private boolean selectorType = false;
     private boolean freeze = false;
     private boolean die = false;
@@ -34,6 +35,15 @@ public class EditorScreen implements IMapLoaderScreen {
     @Override
     public void init(GraphicsContext gc) {
         this.gc = gc;
+
+        // CAMERA SETUP
+        if (gameMap.getSpawn() != null) {
+            double cameraX = (gameMap.getSpawn().getX() * Config.getTileSize()) - Config.getScreenSize().getX() / 2 + Config.getTileSize() / 2;
+            double cameraY = (gameMap.getSpawn().getY() * Config.getTileSize()) - Config.getScreenSize().getY() / 2 + Config.getTileSize() / 2;
+            if (cameraX < 0) cameraX = 0;
+            if (cameraY < 0) cameraY = 0;
+            camera = new Coordinates(cameraX, cameraY);
+        }
 
         // SCROLL EVENT HANDLER
         gc.getCanvas().getScene().setOnScroll(e -> {
@@ -53,11 +63,16 @@ public class EditorScreen implements IMapLoaderScreen {
         });
 
         // SELECTOR TYPE SWITCH
-        gc.getCanvas().getScene().addEventHandler(KeyEvent.KEY_PRESSED, e -> {
-            if (e.getCode().equals(KeyCode.E) && !KeyMap.isMousePressed(MouseButton.PRIMARY) && !KeyMap.isMousePressed(MouseButton.SECONDARY)) {
-                selectorType = !selectorType;
+        EventHandler<KeyEvent> keypressHandler = new EventHandler<>() {
+            @Override
+            public void handle(KeyEvent e) {
+                if (e.getCode().equals(KeyCode.E) && !KeyMap.isMousePressed(MouseButton.PRIMARY) && !KeyMap.isMousePressed(MouseButton.SECONDARY)) {
+                    selectorType = !selectorType;
+                }
             }
-        });
+        };
+
+        gc.getCanvas().getScene().addEventHandler(KeyEvent.KEY_PRESSED, keypressHandler);
 
         // START LOOP
         try {
@@ -65,6 +80,9 @@ public class EditorScreen implements IMapLoaderScreen {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        // REMOVE EVENT HANDLER
+        gc.getCanvas().getScene().removeEventHandler(KeyEvent.KEY_PRESSED, keypressHandler);
     }
 
     private void loop() throws InterruptedException {
@@ -105,7 +123,7 @@ public class EditorScreen implements IMapLoaderScreen {
             } else {
                 camera.setY(0);
             }
-        } 
+        }
         if (KeyMap.isPressed(KeyCode.S)) {
             if (KeyMap.isPressed(KeyCode.CONTROL)) {
                 if (gameMap.getSpawn() != null) {
@@ -215,23 +233,23 @@ public class EditorScreen implements IMapLoaderScreen {
         gc.setTextAlign(TextAlignment.LEFT);
         gc.setFont(Font.font("Arial", 15));
         gc.fillText(String.format("X: %d, Y: %d", tileX, tileY), 5, 15);
-        
+
     }
 
     private void handleSpecial(boolean leftClick, Coordinates tile) {
         if (leftClick) {
             switch (selectedSpecial) {
-                case 0:
-                    gameMap.setSpawn(tile);
-                    break;
-                default:
-                    for (IEntity entity : gameMap.getEntities()) {
-                        if (entity.getCoordinates().equals(tile)) {
-                            return;
-                        }
+            case 0:
+                gameMap.setSpawn(tile);
+                break;
+            default:
+                for (IEntity entity : gameMap.getEntities()) {
+                    if (entity.getCoordinates().equals(tile)) {
+                        return;
                     }
-                    gameMap.addEntity(new BasicEnemy(tile, specials[selectedSpecial]));
-                    break;
+                }
+                gameMap.addEntity(new BasicEnemy(tile, specials[selectedSpecial]));
+                break;
             }
         } else {
             if (gameMap.getSpawn() != null && gameMap.getSpawn().equals(tile)) {
@@ -256,7 +274,7 @@ public class EditorScreen implements IMapLoaderScreen {
         gc.setFont(Font.font("Arial", FontWeight.BOLD, 30));
         gc.setFill(Color.web("#2c59a0"));
         gc.setTextAlign(TextAlignment.CENTER);
-        gc.fillText("PAUSED", Config.getScreenSize().getX() / 2, Config.getScreenSize().getY() / 2);    
+        gc.fillText("PAUSED", Config.getScreenSize().getX() / 2, Config.getScreenSize().getY() / 2);
     }
 
     public void restore() {

@@ -2,7 +2,6 @@ package com.teqtrue.engine.screen;
 
 import com.teqtrue.engine.model.Config;
 import com.teqtrue.engine.model.Coordinates;
-import com.teqtrue.engine.model.GameMap;
 import com.teqtrue.engine.model.KeyMap;
 
 import javafx.animation.AnimationTimer;
@@ -43,8 +42,7 @@ public class MenuScreen implements IApplicationScreen {
                 new AnimationTimer() {
                     public void handle(long currentNanoTime) {
                         draw();
-                        if (die)
-                            this.stop();
+                        if (die) this.stop();
                     }
                 }.start();
             }
@@ -58,8 +56,7 @@ public class MenuScreen implements IApplicationScreen {
             if (timeout > 0) {
                 Thread.sleep(20 - tickDuration);
             }
-            if (die)
-                break;
+            if (die) break;
         }
     }
 
