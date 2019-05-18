@@ -156,7 +156,7 @@ public class GameScreen implements IMapLoaderScreen {
                 break;
         }
         
-        gc.strokeLine(screenWidth / 2, screenHeight / 2, lineEndX + screenWidth / 2, lineEndY + screenHeight / 2);
+        //gc.strokeLine(screenWidth / 2, screenHeight / 2, lineEndX + screenWidth / 2, lineEndY + screenHeight / 2);
 
         // DRAW ENTITITES
         for (IEntity entity : gameMap.getEntities()) {
