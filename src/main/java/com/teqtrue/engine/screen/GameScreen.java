@@ -80,7 +80,7 @@ public class GameScreen implements IMapLoaderScreen {
         }
 
         for (IEntity e : gameMap.getEntities()) {
-            e.update();
+            e.update(gameMap.getEntities());
         }
 
         // center camera on the player

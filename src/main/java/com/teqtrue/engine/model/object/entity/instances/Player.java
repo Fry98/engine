@@ -4,7 +4,10 @@ import com.teqtrue.engine.model.Config;
 import com.teqtrue.engine.model.Coordinates;
 import com.teqtrue.engine.model.KeyMap;
 import com.teqtrue.engine.model.object.entity.AEntity;
+import com.teqtrue.engine.model.object.entity.IEntity;
 import javafx.scene.input.KeyCode;
+
+import java.util.List;
 
 public class Player extends AEntity {
 
@@ -13,7 +16,7 @@ public class Player extends AEntity {
     }
 
     @Override
-    public void update() {
+    public void update(List<IEntity> entities) {
         // WASD+Shift movement
         Coordinates pos = getCoordinates();
         Coordinates movementVector = KeyMap.getMovementVector();
@@ -29,7 +32,7 @@ public class Player extends AEntity {
         Coordinates screenSize = Config.getScreenSize();
         double dx = mouse.getX() - screenSize.getX() / 2;
         double dy = mouse.getY() - screenSize.getY() / 2;
-        setOrientation(Math.toDegrees(Math.atan2(dy, dx)) - 90); // for atan2 0deg is to the right, for us it's to the down
+        setOrientation(Math.toDegrees(Math.atan2(dy, dx)));
     }
 
 }

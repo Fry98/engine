@@ -42,10 +42,8 @@ public class Sprite {
 
     public void drawSprite(GraphicsContext gc, double x, double y, double r) {
         gc.save();
-        if (r != 0) {
-            Rotate rot = new Rotate(r, x + Config.getTileSize() / 2.0, y + Config.getTileSize() / 2.0);
-            gc.transform(rot.getMxx(), rot.getMyx(), rot.getMxy(), rot.getMyy(), rot.getTx(), rot.getTy());
-        }
+        Rotate rot = new Rotate(r-90, x + Config.getTileSize() / 2.0, y + Config.getTileSize() / 2.0);
+        gc.transform(rot.getMxx(), rot.getMyx(), rot.getMxy(), rot.getMyy(), rot.getTx(), rot.getTy());
         gc.drawImage(image, sx, sy, sw, sh, x, y, sw+1, sh+1);
         gc.restore();
     }

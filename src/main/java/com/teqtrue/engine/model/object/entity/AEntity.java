@@ -1,5 +1,6 @@
 package com.teqtrue.engine.model.object.entity;
 
+
 import com.teqtrue.engine.model.Config;
 import com.teqtrue.engine.model.Coordinates;
 
@@ -22,8 +23,6 @@ public abstract class AEntity implements IEntity, Serializable {
         this.orientation = 0;
     }
 
-    public abstract void update();
-
     public Coordinates getCoordinates() {
         return coordinates;
     }
@@ -45,10 +44,20 @@ public abstract class AEntity implements IEntity, Serializable {
     }
 
     public double getOrientation() {
+        return getOrientation(false);
+    }
+
+    public double getOrientation(boolean radians) {
+        if (radians) {
+            return Math.toRadians(orientation);
+        }
         return orientation;
     }
 
     public void setOrientation(double orientation) {
+        if (orientation < 0) {
+            orientation += 360;
+        }
         this.orientation = orientation;
     }
 
