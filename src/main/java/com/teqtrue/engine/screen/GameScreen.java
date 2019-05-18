@@ -166,6 +166,7 @@ public class GameScreen implements IMapLoaderScreen {
         }
     
         // DRAW SCOPE
+        Config.getSprites()[12].drawSprite(gc, KeyMap.getMouse().getX() - Config.getTileSize() / 2 - 1, KeyMap.getMouse().getY() - Config.getTileSize() / 2 - 1);
     }
 
     @Override
