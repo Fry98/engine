@@ -8,6 +8,8 @@ import java.util.List;
 
 public class BasicEnemy extends AEntity {
 
+    private static final long serialVersionUID = 1L;
+
     public BasicEnemy(Coordinates coordinates, int sprite) {
         super(coordinates, sprite, 5);
     }
