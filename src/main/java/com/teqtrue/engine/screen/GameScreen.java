@@ -31,7 +31,7 @@ public class GameScreen implements IMapLoaderScreen {
         // GraphicsContext SETUP
         gc.setStroke(Color.RED);
         gc.setLineWidth(1);
-        gc.getCanvas().getScene().setCursor(Cursor.CROSSHAIR);
+        gc.getCanvas().getScene().setCursor(Cursor.NONE);
         this.gc = gc;
 
         // PLAYER SETUP
@@ -83,8 +83,8 @@ public class GameScreen implements IMapLoaderScreen {
             e.update();
         }
 
-        camera.setX(player.getCoordinates().getX() * Config.getTileSize() - Config.getScreenSize().getX() / 2.0 + Config.getTileSize() / 2.0);
-        camera.setY(player.getCoordinates().getY() * Config.getTileSize() - Config.getScreenSize().getY() / 2.0 + Config.getTileSize() / 2.0);
+        camera.setX(player.getCoordinates().getX() * Config.getTileSize() - screenWidth / 2 + Config.getTileSize() / 2.0);
+        camera.setY(player.getCoordinates().getY() * Config.getTileSize() - screenHeight / 2 + Config.getTileSize() / 2.0);
     }
 
     private void draw() {

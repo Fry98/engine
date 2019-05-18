@@ -13,6 +13,9 @@ public class Config {
     private static Sprite[] sprites;
     private static GameObject[] registeredObjects;
 
+    private static final int TILE_SIZE = 48;
+    private static final Coordinates SCREEN_SIZE = new Coordinates(960,  720);
+
     public static void init() {
         try {
             // LOAD SPRITESHEET
@@ -47,11 +50,11 @@ public class Config {
     }
 
     public static int getTileSize() {
-        return 48;
+        return TILE_SIZE;
     }
 
-    public static Coordinates getScreenSize() {
-        return new Coordinates(960, 720);
+    public static final Coordinates getScreenSize() {
+        return SCREEN_SIZE;
     }
 
     public static Image getSpritesheet() {
