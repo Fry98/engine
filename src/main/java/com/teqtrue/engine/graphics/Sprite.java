@@ -30,14 +30,14 @@ public class Sprite {
      */
     public Sprite(Image img, double sx, double sy, double sw, double sh) {
         this.image = img;
-        this.sx = sx;
-        this.sy = sy;
-        this.sw = sw;
-        this.sh = sh;
+        this.sx = sx+0.5;
+        this.sy = sy+0.5;
+        this.sw = sw-1;
+        this.sh = sh-1;
     }
 
     public void drawSprite(GraphicsContext gc, double x, double y) {
-        gc.drawImage(image, sx, sy, sw, sh, x, y, sw, sh);
+        gc.drawImage(image, sx, sy, sw, sh, x, y, sw+1, sh+1);
     }
 
     public void drawSprite(GraphicsContext gc, double x, double y, double r) {
@@ -46,7 +46,7 @@ public class Sprite {
             Rotate rot = new Rotate(r, x + Config.getTileSize() / 2.0, y + Config.getTileSize() / 2.0);
             gc.transform(rot.getMxx(), rot.getMyx(), rot.getMxy(), rot.getMyy(), rot.getTx(), rot.getTy());
         }
-        gc.drawImage(image, sx, sy, sw, sh, x, y, sw, sh);
+        gc.drawImage(image, sx, sy, sw, sh, x, y, sw+1, sh+1);
         gc.restore();
     }
 }
