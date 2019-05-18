@@ -2,6 +2,8 @@ package com.teqtrue.engine.utils;
 
 import java.io.File;
 import java.security.SecureRandom;
+import java.util.Arrays;
+import java.util.function.Predicate;
 
 import com.teqtrue.engine.model.GameMap;
 import com.teqtrue.engine.model.KeyMap;
@@ -59,31 +61,31 @@ public class SaveScreen {
         });
 
         save.setOnMouseClicked(e -> {
-            saveMap(name.getText(), parent);
-            newWindow.hide();
-            parent.restore();
+            if (saveMap(name.getText(), parent)) {
+                newWindow.hide();
+                parent.restore();
+            } else {
+                name.clear();
+            }
         });
     }
 
-    private static void saveMap(String lvlName, EditorScreen parent) {
-        if (lvlName == "") {
-            return;
+    private static boolean saveMap(String lvlName, EditorScreen parent) {
+        if (lvlName.trim().isEmpty()) {
+            return false;
         }
+
         String filename;
         File folder = new File("src/main/levels");
         File[] files = folder.listFiles();
-        while (true) {
+        do {
             filename = generateFilename() + ".map";
-            for (File file : files) {
-                if (file.getName() == filename) {
-                    continue;
-                }
-            }
-            break;
-        }
+        } while (Arrays.stream(files).map(File::getName).anyMatch(Predicate.isEqual(filename)));
+
         GameMap map = parent.getMap();
         map.setName(lvlName);
         FileUtil.saveObject(map, filename);
+        return true;
     }
 
     private static String generateFilename() {
