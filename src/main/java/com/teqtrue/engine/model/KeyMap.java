@@ -30,6 +30,31 @@ public class KeyMap {
         return keys.contains(keyCode);
     }
 
+    public static Coordinates getMovementVector() {
+        Coordinates vec = new Coordinates(0, 0);
+
+        if (isPressed(KeyCode.W)) {
+            vec.alterY(-1);
+        }
+        if (isPressed(KeyCode.S)) {
+            vec.alterY(1);
+        }
+        if (isPressed(KeyCode.A)) {
+            vec.alterX(-1);
+        }
+        if (isPressed(KeyCode.D)) {
+            vec.alterX(1);
+        }
+
+        // keep the speed constant when moving diagonally
+        if (Math.abs(vec.getX()) + Math.abs(vec.getY()) == 2) {
+            vec.setX(vec.getX() * 1/Math.sqrt(2));
+            vec.setY(vec.getY() * 1/Math.sqrt(2));
+        }
+
+        return vec;
+    }
+
     public static void setMousePressed(MouseButton button, boolean unset) {
         if (!unset) {
             mouse.add(button);

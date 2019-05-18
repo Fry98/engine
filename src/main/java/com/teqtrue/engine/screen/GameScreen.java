@@ -83,6 +83,7 @@ public class GameScreen implements IMapLoaderScreen {
             e.update();
         }
 
+        // center camera on the player
         camera.setX(player.getCoordinates().getX() * Config.getTileSize() - screenWidth / 2 + Config.getTileSize() / 2.0);
         camera.setY(player.getCoordinates().getY() * Config.getTileSize() - screenHeight / 2 + Config.getTileSize() / 2.0);
     }
