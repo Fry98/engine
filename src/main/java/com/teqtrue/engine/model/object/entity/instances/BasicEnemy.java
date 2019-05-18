@@ -10,8 +10,8 @@ public class BasicEnemy extends AEntity {
 
     private static final long serialVersionUID = 1L;
 
-    public BasicEnemy(Coordinates coordinates, int sprite) {
-        super(coordinates, sprite, 5);
+    public BasicEnemy(Coordinates coordinates) {
+        super(coordinates, 8, 5);
     }
 
     @Override

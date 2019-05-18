@@ -20,7 +20,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 import javafx.event.EventHandler;
 
-public class EditorScreen implements IMapLoaderScreen {
+public class EditorScreen implements IApplicationScreen {
 
     private GraphicsContext gc;
     private Coordinates camera = new Coordinates(0, 0);
@@ -35,11 +35,12 @@ public class EditorScreen implements IMapLoaderScreen {
     @Override
     public void init(GraphicsContext gc) {
         this.gc = gc;
+        gameMap = GlobalStore.getMap();
 
         // CAMERA SETUP
         if (gameMap.getSpawn() != null) {
-            double cameraX = (gameMap.getSpawn().getX() * Config.getTileSize()) - Config.getScreenSize().getX() / 2 + Config.getTileSize() / 2;
-            double cameraY = (gameMap.getSpawn().getY() * Config.getTileSize()) - Config.getScreenSize().getY() / 2 + Config.getTileSize() / 2;
+            double cameraX = (gameMap.getSpawn().getX() * GlobalStore.getTileSize()) - GlobalStore.getScreenSize().getX() / 2 + GlobalStore.getTileSize() / 2;
+            double cameraY = (gameMap.getSpawn().getY() * GlobalStore.getTileSize()) - GlobalStore.getScreenSize().getY() / 2 + GlobalStore.getTileSize() / 2;
             if (cameraX < 0) cameraX = 0;
             if (cameraY < 0) cameraY = 0;
             camera = new Coordinates(cameraX, cameraY);
@@ -54,7 +55,7 @@ public class EditorScreen implements IMapLoaderScreen {
                     selectedSpecial--;
                 }
             } else if (e.getDeltaY() < 0) {
-                if (!selectorType && selectedObj < Config.getRegisteredObjects().length - 1) {
+                if (!selectorType && selectedObj < GlobalStore.getRegisteredObjects().length - 1) {
                     selectedObj++;
                 } else if (selectorType && selectedSpecial < specials.length - 1) {
                     selectedSpecial++;
@@ -152,8 +153,8 @@ public class EditorScreen implements IMapLoaderScreen {
         }
 
         Coordinates mousePos = KeyMap.getMouse();
-        int tileX = (int) Math.floor((camera.getX() + mousePos.getX()) / Config.getTileSize());
-        int tileY = (int) Math.floor((camera.getY() + mousePos.getY()) / Config.getTileSize());
+        int tileX = (int) Math.floor((camera.getX() + mousePos.getX()) / GlobalStore.getTileSize());
+        int tileY = (int) Math.floor((camera.getY() + mousePos.getY()) / GlobalStore.getTileSize());
         Coordinates tile = new Coordinates(tileX, tileY);
         if (KeyMap.isMousePressed(MouseButton.PRIMARY) && KeyMap.isMouseSinglePress()) {
             if (!selectorType) {
@@ -173,20 +174,20 @@ public class EditorScreen implements IMapLoaderScreen {
     private void draw() {
         // CLEAR SCREEN
         gc.setFill(Color.WHITE);
-        gc.fillRect(0, 0, Config.getScreenSize().getX(), Config.getScreenSize().getY());
+        gc.fillRect(0, 0, GlobalStore.getScreenSize().getX(), GlobalStore.getScreenSize().getY());
 
         // DRAW OBJECTS IN GAMEMAP
-        int leftX = (int) Math.floor(camera.getX() / Config.getTileSize());
-        int upY = (int) Math.floor(camera.getY() / Config.getTileSize());
-        int rightX = (int) Math.floor((camera.getX() + Config.getScreenSize().getX()) / Config.getTileSize());
-        int downY = (int) Math.floor((camera.getY() + Config.getScreenSize().getY()) / Config.getTileSize());
+        int leftX = (int) Math.floor(camera.getX() / GlobalStore.getTileSize());
+        int upY = (int) Math.floor(camera.getY() / GlobalStore.getTileSize());
+        int rightX = (int) Math.floor((camera.getX() + GlobalStore.getScreenSize().getX()) / GlobalStore.getTileSize());
+        int downY = (int) Math.floor((camera.getY() + GlobalStore.getScreenSize().getY()) / GlobalStore.getTileSize());
 
         for (int x = leftX; x <= rightX; x++) {
             for (int y = upY; y <= downY; y++) {
                 GameObject obj = gameMap.get(x, y);
                 if (obj != null) {
-                    double cornerX = ((x * Config.getTileSize()) - camera.getX());
-                    double cornerY = ((y * Config.getTileSize()) - camera.getY());
+                    double cornerX = ((x * GlobalStore.getTileSize()) - camera.getX());
+                    double cornerY = ((y * GlobalStore.getTileSize()) - camera.getY());
                     obj.drawObject(gc, cornerX, cornerY);
                 }
             }
@@ -194,17 +195,17 @@ public class EditorScreen implements IMapLoaderScreen {
 
         // SELECTED TILE CALCULATION
         Coordinates mousePos = KeyMap.getMouse();
-        int tileX = (int) Math.floor((camera.getX() + mousePos.getX()) / Config.getTileSize());
-        int tileY = (int) Math.floor((camera.getY() + mousePos.getY()) / Config.getTileSize());
-        int cornerX = (int) ((tileX * Config.getTileSize()) - camera.getX());
-        int cornerY = (int) ((tileY * Config.getTileSize()) - camera.getY());
+        int tileX = (int) Math.floor((camera.getX() + mousePos.getX()) / GlobalStore.getTileSize());
+        int tileY = (int) Math.floor((camera.getY() + mousePos.getY()) / GlobalStore.getTileSize());
+        int cornerX = (int) ((tileX * GlobalStore.getTileSize()) - camera.getX());
+        int cornerY = (int) ((tileY * GlobalStore.getTileSize()) - camera.getY());
 
         // DRAW SELECTED OBJECT
         gc.setGlobalAlpha(0.7);
         if (!selectorType) {
-            Config.getRegisteredObjects()[selectedObj].drawObject(gc, cornerX, cornerY);
+            GlobalStore.getRegisteredObjects()[selectedObj].drawObject(gc, cornerX, cornerY);
         } else {
-            Config.getSprites()[specials[selectedSpecial]].drawSprite(gc, cornerX, cornerY);
+            GlobalStore.getSprites()[specials[selectedSpecial]].drawSprite(gc, cornerX, cornerY);
         }
         gc.setGlobalAlpha(1);
 
@@ -216,7 +217,7 @@ public class EditorScreen implements IMapLoaderScreen {
         // DRAW SPAWN POINT
         Coordinates spawn = gameMap.getSpawn();
         if (spawn != null && spawn.getX() >= leftX && spawn.getX() <= rightX && spawn.getY() >= upY && spawn.getY() <= downY) {
-            Config.getSprites()[11].drawSprite(gc, ((spawn.getX() * Config.getTileSize()) - camera.getX()), ((spawn.getY() * Config.getTileSize()) - camera.getY()));
+            GlobalStore.getSprites()[11].drawSprite(gc, ((spawn.getX() * GlobalStore.getTileSize()) - camera.getX()), ((spawn.getY() * GlobalStore.getTileSize()) - camera.getY()));
         }
 
         // DRAW ENTITITES
@@ -224,7 +225,7 @@ public class EditorScreen implements IMapLoaderScreen {
         for (IEntity entity : entities) {
             Coordinates entityCoords = entity.getCoordinates();
             if (entityCoords.getX() >= leftX && entityCoords.getX() <= rightX && entityCoords.getY() >= upY && entityCoords.getY() <= downY) {
-                entity.getSprite().drawSprite(gc, ((entityCoords.getX() * Config.getTileSize()) - camera.getX()), ((entityCoords.getY() * Config.getTileSize()) - camera.getY()));
+                entity.getSprite().drawSprite(gc, ((entityCoords.getX() * GlobalStore.getTileSize()) - camera.getX()), ((entityCoords.getY() * GlobalStore.getTileSize()) - camera.getY()));
             }
         }
 
@@ -242,13 +243,13 @@ public class EditorScreen implements IMapLoaderScreen {
             case 0:
                 gameMap.setSpawn(tile);
                 break;
-            default:
+            case 1:
                 for (IEntity entity : gameMap.getEntities()) {
                     if (entity.getCoordinates().equals(tile)) {
                         return;
                     }
                 }
-                gameMap.addEntity(new BasicEnemy(tile, specials[selectedSpecial]));
+                gameMap.addEntity(new BasicEnemy(tile));
                 break;
             }
         } else {
@@ -269,12 +270,12 @@ public class EditorScreen implements IMapLoaderScreen {
         freeze = true;
         gc.setGlobalAlpha(0.5);
         gc.setFill(Color.WHITE);
-        gc.fillRect(0, 0, Config.getScreenSize().getX(), Config.getScreenSize().getY());
+        gc.fillRect(0, 0, GlobalStore.getScreenSize().getX(), GlobalStore.getScreenSize().getY());
         gc.setGlobalAlpha(1);
         gc.setFont(Font.font("Arial", FontWeight.BOLD, 30));
         gc.setFill(Color.web("#2c59a0"));
         gc.setTextAlign(TextAlignment.CENTER);
-        gc.fillText("PAUSED", Config.getScreenSize().getX() / 2, Config.getScreenSize().getY() / 2);
+        gc.fillText("PAUSED", GlobalStore.getScreenSize().getX() / 2, GlobalStore.getScreenSize().getY() / 2);
     }
 
     public void restore() {
@@ -288,10 +289,5 @@ public class EditorScreen implements IMapLoaderScreen {
     @Override
     public IApplicationScreen getNextScreen() {
         return new LevelSelectScreen(new EditorScreen(), true);
-    }
-
-    @Override
-    public void loadMapData(GameMap map) {
-        gameMap = map;
     }
 }

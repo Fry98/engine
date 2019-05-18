@@ -1,6 +1,6 @@
 package com.teqtrue.engine;
 
-import com.teqtrue.engine.model.Config;
+import com.teqtrue.engine.model.GlobalStore;
 import com.teqtrue.engine.model.KeyMap;
 import com.teqtrue.engine.screen.IApplicationScreen;
 
@@ -20,7 +20,7 @@ public class MainLoop implements Runnable {
     @Override
     public void run() {
         IApplicationScreen screen = new MenuScreen();
-        Config.init();
+        GlobalStore.init();
         while (true) {
             KeyMap.clear();
             gc.setTextAlign(TextAlignment.LEFT);

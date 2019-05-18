@@ -1,6 +1,6 @@
 package com.teqtrue.engine.screen;
 
-import com.teqtrue.engine.model.Config;
+import com.teqtrue.engine.model.GlobalStore;
 import com.teqtrue.engine.model.Coordinates;
 import com.teqtrue.engine.model.KeyMap;
 
@@ -61,7 +61,7 @@ public class MenuScreen implements IApplicationScreen {
     }
 
     private void update() {
-        Coordinates screenSize = Config.getScreenSize();
+        Coordinates screenSize = GlobalStore.getScreenSize();
         Coordinates mousePos = KeyMap.getMouse();
 
         // MENU ITEM HIGHLIGHT
@@ -96,7 +96,7 @@ public class MenuScreen implements IApplicationScreen {
     }
 
     private void draw() {
-        Coordinates screenSize = Config.getScreenSize();
+        Coordinates screenSize = GlobalStore.getScreenSize();
 
         // CLEAR SCREEN
         gc.setFill(Color.PAPAYAWHIP);

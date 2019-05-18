@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import com.teqtrue.engine.model.Config;
+import com.teqtrue.engine.model.GlobalStore;
 import com.teqtrue.engine.model.Coordinates;
 import com.teqtrue.engine.model.GameMap;
 import com.teqtrue.engine.model.KeyMap;
@@ -22,19 +22,18 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
 public class LevelSelectScreen implements IApplicationScreen {
-    private IMapLoaderScreen nextScreen;
-    private boolean goBack = false;
+    private IApplicationScreen nextScreen;
     private GraphicsContext gc;
     private boolean die = false;
     private ArrayList<GameMap> levels = new ArrayList<>();
-    private double screenWidth =  Config.getScreenSize().getX();
+    private double screenWidth =  GlobalStore.getScreenSize().getX();
     private int cardOffsetY = 100;
     private int selectedCard = -1;
     private boolean createNew;    
     private boolean delete = false;
     private ArrayList<File> files;
 
-    public LevelSelectScreen(IMapLoaderScreen nextScreen, boolean createNew) {
+    public LevelSelectScreen(IApplicationScreen nextScreen, boolean createNew) {
         this.nextScreen = nextScreen;
         this.createNew = createNew;
     }
@@ -113,7 +112,7 @@ public class LevelSelectScreen implements IApplicationScreen {
 
         // ESCAPE
         if (KeyMap.isPressed(KeyCode.ESCAPE)) {
-            goBack = true;
+            nextScreen = new MenuScreen();
             die = true;
         }
 
@@ -143,7 +142,7 @@ public class LevelSelectScreen implements IApplicationScreen {
 
         // CLEAR SCREEN
         gc.setFill(Color.PAPAYAWHIP);
-        gc.fillRect(0, 0, Config.getScreenSize().getX(), Config.getScreenSize().getY());
+        gc.fillRect(0, 0, GlobalStore.getScreenSize().getX(), GlobalStore.getScreenSize().getY());
         
         // TITLE
         gc.setFill(Color.BLACK);
@@ -197,13 +196,10 @@ public class LevelSelectScreen implements IApplicationScreen {
 
     @Override
     public IApplicationScreen getNextScreen() {
-        if (goBack) {
-            return new MenuScreen();
-        }
         if (selectedCard > -1) {
-            nextScreen.loadMapData(levels.get(selectedCard));
+            GlobalStore.setMap(levels.get(selectedCard));
         } else {
-            nextScreen.loadMapData(new GameMap());
+            GlobalStore.setMap(new GameMap());
         }
         return nextScreen;
     }

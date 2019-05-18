@@ -8,10 +8,11 @@ import com.teqtrue.engine.utils.ImageScaler;
 
 import javafx.scene.image.Image;
 
-public class Config {
+public class GlobalStore {
     private static Image spritesheet;
     private static Sprite[] sprites;
     private static GameObject[] registeredObjects;
+    private static GameMap map = null;
 
     private static final int TILE_SIZE = 48;
     private static final Coordinates SCREEN_SIZE = new Coordinates(960,  720);
@@ -67,5 +68,13 @@ public class Config {
 
     public static GameObject[] getRegisteredObjects() {
         return registeredObjects;
+    }
+
+    public static void setMap(GameMap gameMap) {
+        map = gameMap;
+    }
+
+    public static GameMap getMap() {
+        return map;
     }
 }

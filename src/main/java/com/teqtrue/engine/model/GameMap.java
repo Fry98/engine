@@ -40,7 +40,7 @@ public class GameMap implements Serializable {
     public GameObject get(Coordinates coords) {
         if (objects.containsKey(coords)) {
             int index = objects.get(coords);
-            return Config.getRegisteredObjects()[index];
+            return GlobalStore.getRegisteredObjects()[index];
         }
         return null;
     }
@@ -86,5 +86,12 @@ public class GameMap implements Serializable {
 
     public String getName() {
         return name;
+    }
+
+    public boolean hasCollision(Coordinates coords) {
+        if (get(coords) == null) {
+            return false;
+        }
+        return get(coords).hasCollision();
     }
 }

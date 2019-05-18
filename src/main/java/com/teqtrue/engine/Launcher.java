@@ -8,7 +8,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.stage.Stage;
 
-import com.teqtrue.engine.model.Config;
+import com.teqtrue.engine.model.GlobalStore;
 import com.teqtrue.engine.model.KeyMap;
 
 public class Launcher extends Application {
@@ -23,7 +23,7 @@ public class Launcher extends Application {
         // GAME WINDOW
         stage.setTitle("TeqEngine");
         Group root = new Group();
-        Canvas canvas = new Canvas(Config.getScreenSize().getX(), Config.getScreenSize().getY());
+        Canvas canvas = new Canvas(GlobalStore.getScreenSize().getX(), GlobalStore.getScreenSize().getY());
         GraphicsContext gc = canvas.getGraphicsContext2D();
         root.getChildren().add(canvas);
         Scene scene = new Scene(root);

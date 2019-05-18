@@ -1,7 +1,7 @@
 package com.teqtrue.engine.model.object.entity;
 
 
-import com.teqtrue.engine.model.Config;
+import com.teqtrue.engine.model.GlobalStore;
 import com.teqtrue.engine.model.Coordinates;
 
 import java.io.Serializable;
@@ -32,7 +32,7 @@ public abstract class AEntity implements IEntity, Serializable {
     }
 
     public Sprite getSprite() {
-        return Config.getSprites()[spriteIndex];
+        return GlobalStore.getSprites()[spriteIndex];
     }
 
     public double getSpeed() {
