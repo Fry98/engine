@@ -9,6 +9,7 @@ public class KeyMap {
     private static HashSet<KeyCode> keys = new HashSet<>();
     private static HashSet<MouseButton> mouse = new HashSet<>();
     private static Coordinates mousePosition = new Coordinates(0, 0);
+    private static boolean clickedNow = false;
 
     public static void setKey(KeyCode keyCode, boolean unset) {
         if (!unset) {
@@ -61,6 +62,9 @@ public class KeyMap {
         } else {
             mouse.remove(button);
         }
+        if (button.equals(MouseButton.PRIMARY) && !unset) {
+            clickedNow = true;
+        }
     }
 
     public static boolean isMousePressed(MouseButton button) {
@@ -69,6 +73,14 @@ public class KeyMap {
 
     public static boolean isMouseSinglePress() {
         return (mouse.size() == 1);
+    }
+
+    public static boolean wasMouseClickedNow() {
+        if (clickedNow) {
+            clickedNow = false;
+            return true;
+        }
+        return false;
     }
 
     public static void setMousePosition(double x, double y) {
@@ -83,5 +95,6 @@ public class KeyMap {
     public static void clear() {
         keys.clear();
         mouse.clear();
+        clickedNow = false;
     }
 }

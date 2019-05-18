@@ -1,10 +1,15 @@
 package com.teqtrue.engine.screen;
 
 import com.teqtrue.engine.model.GlobalStore;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import com.teqtrue.engine.model.Coordinates;
 import com.teqtrue.engine.model.GameMap;
 import com.teqtrue.engine.model.KeyMap;
 import com.teqtrue.engine.model.object.GameObject;
+import com.teqtrue.engine.model.object.Projectile;
 import com.teqtrue.engine.model.object.entity.IEntity;
 import com.teqtrue.engine.model.object.entity.instances.Player;
 
@@ -75,13 +80,31 @@ public class GameScreen implements IApplicationScreen {
         }
     }
 
-    private void update() {
+    private void update() throws InterruptedException {
         if (KeyMap.isPressed(KeyCode.ESCAPE)) {
             die = true;
         }
 
-        for (IEntity e : gameMap.getEntities()) {
-            e.update(gameMap.getEntities());
+        // THREADS FOR ENTITY UPDATE
+        ArrayList<Thread> threadPool = new ArrayList<>();
+
+        for (IEntity entity : gameMap.getEntities()) {
+            Thread newThread = new Thread(entity.update());
+            threadPool.add(newThread);
+            newThread.start();
+        }
+
+        // THREADS FOR PROJECTILE UPDATE
+        List<Projectile> projectiles = gameMap.getProjectiles();
+        for (int i = 0; i < projectiles.size(); i++) {
+            Thread newThread = new Thread(projectiles.get(i).update(i));
+            threadPool.add(newThread);
+            newThread.start();
+        }
+
+        // WAIT FOR THREADS TO FINISH
+        for (Thread thread : threadPool) {
+            thread.join();
         }
 
         // center camera on the player
@@ -165,6 +188,15 @@ public class GameScreen implements IApplicationScreen {
             if (entityCoords.getX() >= leftX && entityCoords.getX() <= rightX && entityCoords.getY() >= upY && entityCoords.getY() <= downY) {
                 entity.getSprite().drawSprite(gc, (entityCoords.getX() * GlobalStore.getTileSize()) - camera.getX(), (entityCoords.getY() * GlobalStore.getTileSize()) - camera.getY(), entity.getOrientation());
             }
+        }
+
+        // DRAW PROJECTILES
+        for (Projectile projectile : gameMap.getProjectiles()) {
+            projectile.getSprite().drawSprite(
+                gc,
+                projectile.getPosition().getX() * GlobalStore.getTileSize() - GlobalStore.getTileSize() / 2 - camera.getX(),
+                projectile.getPosition().getY() * GlobalStore.getTileSize() - GlobalStore.getTileSize() / 2 - camera.getY()
+            );
         }
     
         // DRAW SCOPE

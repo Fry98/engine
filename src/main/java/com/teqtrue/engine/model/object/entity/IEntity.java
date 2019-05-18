@@ -3,10 +3,8 @@ package com.teqtrue.engine.model.object.entity;
 import com.teqtrue.engine.graphics.Sprite;
 import com.teqtrue.engine.model.Coordinates;
 
-import java.util.List;
-
 public interface IEntity {
-    void update(List<IEntity> entities);
+    Runnable update();
     Coordinates getCoordinates();
     void setCoordinates(Coordinates coordinates);
     Sprite getSprite();

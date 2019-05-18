@@ -12,11 +12,9 @@ import com.teqtrue.engine.utils.FileUtil;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
@@ -57,31 +55,12 @@ public class LevelSelectScreen implements IApplicationScreen {
             levels.add(FileUtil.loadObject(files.get(i).getName(), GameMap.class));
         }
 
-        EventHandler<MouseEvent> mouseHandler = new EventHandler<MouseEvent>() {            
-            @Override
-            public void handle(MouseEvent e) {
-                if (e.isPrimaryButtonDown() && selectedCard != -1) {
-                    if (delete) {
-                        removeLevel(selectedCard);
-                    } else {
-                        die = true;
-                    }
-                }
-            }
-        };
-
-        // MOUSE CLICK HANDLER
-        gc.getCanvas().getScene().addEventHandler(MouseEvent.MOUSE_PRESSED, mouseHandler);
-
         // START LOOP
         try {
             loop();
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        // REMOVE EVENT HANDLER
-        gc.getCanvas().getScene().removeEventHandler(MouseEvent.MOUSE_PRESSED, mouseHandler);
     }
 
     private void loop() throws InterruptedException {
@@ -134,6 +113,17 @@ public class LevelSelectScreen implements IApplicationScreen {
         if (selectedCard == -1 && createNew) {
             if (mousePos.getX() > 350 && mousePos.getX() < screenWidth - 350 && mousePos.getY() > cardPositionY && mousePos.getY() < cardPositionY + 50) {
                 selectedCard = -2;
+            }
+        }
+
+        // MOUSE CLICK HANDLING
+        if (KeyMap.wasMouseClickedNow()) {
+            if (selectedCard != -1) {
+                if (delete) {
+                    removeLevel(selectedCard);
+                } else {
+                    die = true;
+                }
             }
         }
     }

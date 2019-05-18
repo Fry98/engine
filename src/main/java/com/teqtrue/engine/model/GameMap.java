@@ -2,6 +2,7 @@ package com.teqtrue.engine.model;
 
 import com.teqtrue.engine.model.object.entity.IEntity;
 import com.teqtrue.engine.model.object.GameObject;
+import com.teqtrue.engine.model.object.Projectile;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.Map;
 public class GameMap implements Serializable {
     private Map<Coordinates, Integer> objects = new HashMap<>();
     private List<IEntity> entities = new ArrayList<>();
+    private List<Projectile> projectiles = new ArrayList<>();
     private Coordinates spawnPoint = null;
     private String name;
     private static final long serialVersionUID = 1L;
@@ -88,10 +90,24 @@ public class GameMap implements Serializable {
         return name;
     }
 
+    // COLLISION CHECK
     public boolean hasCollision(Coordinates coords) {
         if (get(coords) == null) {
             return false;
         }
         return get(coords).hasCollision();
+    }
+
+    // PROJECTILES
+    public synchronized void addProjectile(Projectile newProjectile) {
+        projectiles.add(newProjectile);
+    }
+
+    public void removeProjectile(int index) {
+        projectiles.remove(index);
+    }
+
+    public List<Projectile> getProjectiles() {
+        return projectiles;
     }
 }
