@@ -1,6 +1,7 @@
 package com.teqtrue.engine.model.object.entity.instances;
 
 import com.teqtrue.engine.model.Coordinates;
+import com.teqtrue.engine.model.GameMap;
 import com.teqtrue.engine.model.GlobalStore;
 import com.teqtrue.engine.model.object.entity.AEntity;
 import com.teqtrue.engine.model.object.entity.IEntity;
@@ -21,9 +22,12 @@ public class BasicEnemy extends AEntity {
             @Override
             public void run() {
                 Coordinates pos = getCoordinates();
+                GameMap gameMap = GlobalStore.getMap();
+                double newX = pos.getX();
+                double newY = pos.getY();
 
                 // find the player
-                IEntity player = findPlayer(GlobalStore.getMap().getEntities());
+                IEntity player = findPlayer(gameMap.getEntities());
                 if (player != null) {
                     Coordinates playerPos = player.getCoordinates();
                     double dx = playerPos.getX() - pos.getX();
@@ -34,10 +38,34 @@ public class BasicEnemy extends AEntity {
         
                     // run towards the player
                     if (dx*dx + dy*dy > 4) {
-                        pos.alterX(Math.cos(getOrientation(true)) * getSpeed() * 0.02);
-                        pos.alterY(Math.sin(getOrientation(true)) * getSpeed() * 0.02);
+                        newX += Math.cos(getOrientation(true)) * getSpeed() * 0.02;
+                        newY += Math.sin(getOrientation(true)) * getSpeed() * 0.02;
                     }
-                }        
+
+                }
+
+                // vertical collisions
+                if (getOrientation() > 180 && getOrientation() < 360) {
+                    if (gameMap.hasCollision(pos.getX(), newY) || gameMap.hasCollision(pos.getX() + 1, newY)) {
+                        newY = Math.ceil(newY);
+                    }
+                } else if (getOrientation() > 0 && getOrientation() < 180) {
+                    if (gameMap.hasCollision(pos.getX(), newY + 1) || gameMap.hasCollision(pos.getX() + 1, newY + 1)) {
+                        newY = Math.floor(newY) - 0.01;
+                    }
+                }
+                // horizontal collisions
+                if (getOrientation() > 90 && getOrientation() < 270) {
+                    if (gameMap.hasCollision(newX, pos.getY()) || gameMap.hasCollision(newX, pos.getY() + 1)) {
+                        newX = Math.ceil(newX);
+                    }
+                } else if (getOrientation() > 270 || getOrientation() < 90) {
+                    if (gameMap.hasCollision(newX + 1, pos.getY()) || gameMap.hasCollision(newX + 1, pos.getY() + 1)) {
+                        newX = Math.floor(newX) - 0.01;
+                    }
+                }
+                pos.setX(newX);
+                pos.setY(newY);
             }
         };
     }

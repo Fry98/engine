@@ -34,49 +34,24 @@ public class Player extends AEntity {
                 double newX = pos.getX() + movementVector.getX() * getSpeed() * speedMult * 0.02;
                 double newY = pos.getY() + movementVector.getY() * getSpeed() * speedMult * 0.02;
 
-                // VERTICAL COLLISIONS
-                if (KeyMap.isPressed(KeyCode.W)) {
-                    Coordinates topLeftTile = new Coordinates(Math.floor(pos.getX()), Math.floor(newY));
-                    if (gameMap.hasCollision(topLeftTile)) {
+                // vertical collisions
+                if (movementVector.getY() < 0) {
+                    if (gameMap.hasCollision(pos.getX(), newY) || gameMap.hasCollision(pos.getX() + 1, newY)) {
                         newY = Math.ceil(newY);
-                    } else {
-                        Coordinates topRightTile = new Coordinates(Math.floor(pos.getX() + 1), Math.floor(newY));
-                        if (gameMap.hasCollision(topRightTile)) {
-                            newY = Math.ceil(newY);
-                        }
                     }
-                } else if (KeyMap.isPressed(KeyCode.S)) {
-                    Coordinates bottomLeftTile = new Coordinates(Math.floor(pos.getX()), Math.floor(newY + 1));
-                    if (gameMap.hasCollision(bottomLeftTile)) {
-                        newY = Math.floor(newY) - 0.1;
-                    } else {
-                        Coordinates bottomRightTile = new Coordinates(Math.floor(pos.getX() + 1), Math.floor(newY + 1));
-                        if (gameMap.hasCollision(bottomRightTile)) {
-                            newY = Math.floor(newY) - 0.1;
-                        }
+                } else if (movementVector.getY() > 0) {
+                    if (gameMap.hasCollision(pos.getX(), newY + 1) || gameMap.hasCollision(pos.getX() + 1, newY + 1)) {
+                        newY = Math.floor(newY) - 0.01;
                     }
                 }
-
-                // HORIZONTAL COLLISIONS
-                if (KeyMap.isPressed(KeyCode.A)) {
-                    Coordinates topLeftTile = new Coordinates(Math.floor(newX), Math.floor(pos.getY()));
-                    if (gameMap.hasCollision(topLeftTile)) {
+                // horizontal collisions
+                if (movementVector.getX() < 0) {
+                    if (gameMap.hasCollision(newX, pos.getY()) || gameMap.hasCollision(newX, pos.getY() + 1)) {
                         newX = Math.ceil(newX);
-                    } else {
-                        Coordinates bottomLeftTile = new Coordinates(Math.floor(newX), Math.floor(pos.getY() + 1));
-                        if (gameMap.hasCollision(bottomLeftTile)) {
-                            newX = Math.ceil(newX);
-                        }
                     }
-                } else if (KeyMap.isPressed(KeyCode.D)) {
-                    Coordinates topRightTile = new Coordinates(Math.floor(newX + 1), Math.floor(pos.getY()));
-                    if (gameMap.hasCollision(topRightTile)) {
-                        newX = Math.floor(newX) - 0.1;
-                    } else {
-                        Coordinates bottomRightTile = new Coordinates(Math.floor(newX + 1), Math.floor(pos.getY() + 1));
-                        if (gameMap.hasCollision(bottomRightTile)) {
-                            newX = Math.floor(newX) - 0.1;
-                        }
+                } else if (movementVector.getX() > 0) {
+                    if (gameMap.hasCollision(newX + 1, pos.getY()) || gameMap.hasCollision(newX + 1, pos.getY() + 1)) {
+                        newX = Math.floor(newX) - 0.01;
                     }
                 }
 

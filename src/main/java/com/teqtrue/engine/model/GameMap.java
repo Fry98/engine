@@ -92,10 +92,15 @@ public class GameMap implements Serializable {
 
     // COLLISION CHECK
     public boolean hasCollision(Coordinates coords) {
-        if (get(coords) == null) {
+        GameObject obj = get(coords);
+        if (obj == null) {
             return false;
         }
-        return get(coords).hasCollision();
+        return obj.hasCollision();
+    }
+
+    public boolean hasCollision(double x, double y) {
+        return hasCollision(new Coordinates((int) x, (int) y));
     }
 
     // PROJECTILES
