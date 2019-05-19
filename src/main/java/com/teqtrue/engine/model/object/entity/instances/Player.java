@@ -11,7 +11,7 @@ import javafx.scene.input.MouseButton;
 
 public class Player extends AEntity {
 
-    private int countdown = 0;
+    private int cooldown = 0;
     private static final long serialVersionUID = 1L;
 
     public Player(Coordinates coordinates) {
@@ -58,11 +58,11 @@ public class Player extends AEntity {
                 pos.setX(newX);
                 pos.setY(newY);
 
-                if (countdown > 0) {
-                    countdown--;
+                if (cooldown > 0) {
+                    cooldown--;
                 }
 
-                if (KeyMap.isMousePressed(MouseButton.PRIMARY) && countdown == 0) {
+                if (KeyMap.isMousePressed(MouseButton.PRIMARY) && cooldown == 0) {
                     double orientation = getOrientation();
 
                     gameMap.addProjectile(new Projectile(
@@ -70,7 +70,7 @@ public class Player extends AEntity {
                         new Coordinates(newX + 0.5, newY + 0.5),
                         new Coordinates(Math.cos(Math.toRadians(orientation)), Math.sin(Math.toRadians(orientation)))
                     ));
-                    countdown = 5;
+                    cooldown = 5;
                 }
 
                 // rotate towards the mouse

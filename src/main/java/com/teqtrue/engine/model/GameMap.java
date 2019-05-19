@@ -93,6 +93,11 @@ public class GameMap implements Serializable {
 
     // COLLISION CHECK
     public boolean hasCollision(Coordinates coords) {
+        return hasCollision(coords.getX(), coords.getY());
+    }
+
+    public boolean hasCollision(double x, double y) {
+        Coordinates coords = new Coordinates((int) x, (int) y);
         GameObject obj = get(coords);
         if (obj == null) {
             return false;
@@ -100,13 +105,11 @@ public class GameMap implements Serializable {
         return obj.hasCollision();
     }
 
-    public boolean hasCollision(double x, double y) {
-        return hasCollision(new Coordinates((int) x, (int) y));
-    }
-
     // PROJECTILES
     public synchronized void addProjectile(Projectile newProjectile) {
-        projectiles.add(newProjectile);
+        if (!hasCollision(newProjectile.getPosition())) {
+            projectiles.add(newProjectile);
+        }
     }
 
     public synchronized void removeProjectile(Projectile projectile) {

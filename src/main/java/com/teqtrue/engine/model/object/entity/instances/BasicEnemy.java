@@ -3,6 +3,7 @@ package com.teqtrue.engine.model.object.entity.instances;
 import com.teqtrue.engine.model.Coordinates;
 import com.teqtrue.engine.model.GameMap;
 import com.teqtrue.engine.model.GlobalStore;
+import com.teqtrue.engine.model.object.Projectile;
 import com.teqtrue.engine.model.object.entity.AEntity;
 import com.teqtrue.engine.model.object.entity.IEntity;
 
@@ -10,6 +11,7 @@ import java.util.List;
 
 public class BasicEnemy extends AEntity {
 
+    private int cooldown = 0;
     private static final long serialVersionUID = 1L;
 
     public BasicEnemy(Coordinates coordinates) {
@@ -18,13 +20,17 @@ public class BasicEnemy extends AEntity {
 
     @Override
     public Runnable update() {
-        return new Runnable(){        
+        return new Runnable(){
             @Override
             public void run() {
                 Coordinates pos = getCoordinates();
                 GameMap gameMap = GlobalStore.getMap();
                 double newX = pos.getX();
                 double newY = pos.getY();
+
+                if (cooldown > 0) {
+                    cooldown--;
+                }
 
                 // find the player
                 IEntity player = findPlayer(gameMap.getEntities());
@@ -42,6 +48,17 @@ public class BasicEnemy extends AEntity {
                         newY += Math.sin(getOrientation(true)) * getSpeed() * 0.02;
                     }
 
+                    // shoot at him
+                    if (cooldown == 0) {
+                        double orientation = getOrientation();
+
+                        gameMap.addProjectile(new Projectile(
+                                GlobalStore.getSprites()[9],
+                                new Coordinates(newX + 0.5, newY + 0.5),
+                                new Coordinates(Math.cos(Math.toRadians(orientation)), Math.sin(Math.toRadians(orientation)))
+                        ));
+                        cooldown = 5;
+                    }
                 }
 
                 // vertical collisions

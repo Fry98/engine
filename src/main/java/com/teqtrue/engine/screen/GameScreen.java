@@ -112,7 +112,7 @@ public class GameScreen implements IApplicationScreen {
 
     private void draw() {
         // CLEAR SCREEN
-        gc.setFill(Color.WHITE);
+        gc.setFill(Color.BLACK);
         gc.fillRect(0, 0, GlobalStore.getScreenSize().getX(), GlobalStore.getScreenSize().getY());
 
         // DRAW OBJECTS IN GAMEMAP
