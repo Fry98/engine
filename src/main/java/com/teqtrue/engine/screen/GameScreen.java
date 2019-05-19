@@ -86,15 +86,16 @@ public class GameScreen implements IApplicationScreen {
 
         // THREADS FOR ENTITY UPDATE
         ArrayList<Thread> threadPool = new ArrayList<>();
+        ArrayList<Projectile> projectiles = gameMap.getProjectiles();
 
         for (IEntity entity : gameMap.getEntities()) {
-            Thread newThread = new Thread(entity.update());
+            Thread newThread = new Thread(entity.update(projectiles));
             threadPool.add(newThread);
             newThread.start();
         }
 
         // THREADS FOR PROJECTILE UPDATE
-        for (Projectile projectile : gameMap.getProjectiles()) {
+        for (Projectile projectile : projectiles) {
             Thread newThread = new Thread(projectile.update());
             threadPool.add(newThread);
             newThread.start();

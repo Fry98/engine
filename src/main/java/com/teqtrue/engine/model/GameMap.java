@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class GameMap implements Serializable {
     private Map<Coordinates, Integer> objects = new HashMap<>();
-    private List<IEntity> entities = new ArrayList<>();
+    private ArrayList<IEntity> entities = new ArrayList<>();
     private HashSet<Projectile> projectiles = new HashSet<>();
     private Coordinates spawnPoint = null;
     private String name;
@@ -71,7 +71,7 @@ public class GameMap implements Serializable {
 
     // ENTITIES
     public List<IEntity> getEntities() {
-        return entities;
+        return (List<IEntity>) entities.clone();
     }
 
     public void addEntity(IEntity entity) {
@@ -80,6 +80,15 @@ public class GameMap implements Serializable {
 
     public void removeEntity(int index) {
         entities.remove(index);
+    }
+
+    public void removeEntity(IEntity entity) {
+        for (int i = 0; i < entities.size(); i++) {
+            if (entity == entities.get(i)) {
+                entities.remove(i);
+                break;
+            }
+        }
     }
 
     // LEVEL NAME

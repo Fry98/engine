@@ -1,11 +1,15 @@
 package com.teqtrue.engine.model.object.entity.instances;
 
 import com.teqtrue.engine.model.GlobalStore;
+
+import java.util.ArrayList;
+
 import com.teqtrue.engine.model.Coordinates;
 import com.teqtrue.engine.model.GameMap;
 import com.teqtrue.engine.model.KeyMap;
 import com.teqtrue.engine.model.object.Projectile;
 import com.teqtrue.engine.model.object.entity.AEntity;
+
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 
@@ -19,7 +23,7 @@ public class Player extends AEntity {
     }
 
     @Override
-    public Runnable update() {
+    public Runnable update(ArrayList<Projectile> projectiles) {
         return new Runnable() {
             @Override
             public void run() {
