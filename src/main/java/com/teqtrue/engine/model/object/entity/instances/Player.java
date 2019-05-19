@@ -70,7 +70,7 @@ public class Player extends AEntity {
                         new Coordinates(newX + 0.5, newY + 0.5),
                         new Coordinates(Math.cos(Math.toRadians(orientation)), Math.sin(Math.toRadians(orientation)))
                     ));
-                    countdown = 4;
+                    countdown = 5;
                 }
 
                 // rotate towards the mouse

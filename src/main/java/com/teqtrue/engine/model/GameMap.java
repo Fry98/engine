@@ -15,7 +15,6 @@ public class GameMap implements Serializable {
     private Map<Coordinates, Integer> objects = new HashMap<>();
     private List<IEntity> entities = new ArrayList<>();
     private HashSet<Projectile> projectiles = new HashSet<>();
-    private ArrayList<Projectile> insertionQueue = new ArrayList<>();
     private Coordinates spawnPoint = null;
     private String name;
     private static final long serialVersionUID = 1L;
@@ -107,14 +106,14 @@ public class GameMap implements Serializable {
 
     // PROJECTILES
     public synchronized void addProjectile(Projectile newProjectile) {
-        insertionQueue.add(newProjectile);
+        projectiles.add(newProjectile);
     }
 
-    public HashSet<Projectile> getProjectiles() {
-        for (Projectile projectile : insertionQueue) {
-            projectiles.add(projectile);
-        }
-        insertionQueue.clear();
-        return projectiles;
+    public synchronized void removeProjectile(Projectile projectile) {
+        projectiles.remove(projectile);
+    }
+
+    public synchronized ArrayList<Projectile> getProjectiles() {
+        return new ArrayList<Projectile>(projectiles);
     }
 }
