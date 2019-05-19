@@ -8,6 +8,7 @@ public class Projectile {
     private Sprite sprite;
     private Coordinates pos;
     private Coordinates vec;
+    private boolean dead;
 
     public Projectile(Sprite sprite, Coordinates position, Coordinates movementVector) {
         this.sprite = sprite;
@@ -18,7 +19,7 @@ public class Projectile {
         vec = movementVector;
     }
 
-    public Runnable update(int index) {
+    public Runnable update() {
         return new Runnable(){        
             @Override
             public void run() {
@@ -26,7 +27,7 @@ public class Projectile {
                 double newY = pos.getY() + vec.getY() * 0.6;
 
                 if (GlobalStore.getMap().hasCollision(new Coordinates(Math.floor(newX), Math.floor(newY)))) {
-                    GlobalStore.getMap().removeProjectile(index);
+                    dead = true;
                     return;
                 }
 
@@ -49,5 +50,17 @@ public class Projectile {
 
     public Coordinates getMovementVector() {
         return vec;
+    }
+
+    public boolean equals(Projectile p2) {
+        return p2.pos.equals(pos) && p2.vec.equals(vec);
+    }
+
+    public boolean isDead() {
+        return dead;
+    }
+
+    public void kill() {
+        dead = true;
     }
 }

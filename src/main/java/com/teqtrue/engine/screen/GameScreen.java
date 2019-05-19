@@ -3,7 +3,7 @@ package com.teqtrue.engine.screen;
 import com.teqtrue.engine.model.GlobalStore;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Iterator;
 
 import com.teqtrue.engine.model.Coordinates;
 import com.teqtrue.engine.model.GameMap;
@@ -95,9 +95,14 @@ public class GameScreen implements IApplicationScreen {
         }
 
         // THREADS FOR PROJECTILE UPDATE
-        List<Projectile> projectiles = gameMap.getProjectiles();
-        for (int i = 0; i < projectiles.size(); i++) {
-            Thread newThread = new Thread(projectiles.get(i).update(i));
+        Iterator<Projectile> projectileIter = gameMap.getProjectiles().iterator();
+        while (projectileIter.hasNext()) {
+            Projectile nextProjectile = projectileIter.next();
+            if (nextProjectile.isDead()) {
+                projectileIter.remove();
+                continue;
+            }
+            Thread newThread = new Thread(nextProjectile.update());
             threadPool.add(newThread);
             newThread.start();
         }

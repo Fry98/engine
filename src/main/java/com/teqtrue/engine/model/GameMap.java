@@ -7,13 +7,15 @@ import com.teqtrue.engine.model.object.Projectile;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
 public class GameMap implements Serializable {
     private Map<Coordinates, Integer> objects = new HashMap<>();
     private List<IEntity> entities = new ArrayList<>();
-    private List<Projectile> projectiles = new ArrayList<>();
+    private HashSet<Projectile> projectiles = new HashSet<>();
+    private ArrayList<Projectile> insertionQueue = new ArrayList<>();
     private Coordinates spawnPoint = null;
     private String name;
     private static final long serialVersionUID = 1L;
@@ -105,14 +107,14 @@ public class GameMap implements Serializable {
 
     // PROJECTILES
     public synchronized void addProjectile(Projectile newProjectile) {
-        projectiles.add(newProjectile);
+        insertionQueue.add(newProjectile);
     }
 
-    public void removeProjectile(int index) {
-        projectiles.remove(index);
-    }
-
-    public List<Projectile> getProjectiles() {
+    public HashSet<Projectile> getProjectiles() {
+        for (Projectile projectile : insertionQueue) {
+            projectiles.add(projectile);
+        }
+        insertionQueue.clear();
         return projectiles;
     }
 }
