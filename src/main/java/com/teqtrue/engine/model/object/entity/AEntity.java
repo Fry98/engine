@@ -35,6 +35,10 @@ public abstract class AEntity implements IEntity, Serializable {
         return GlobalStore.getSprites()[spriteIndex];
     }
 
+    protected void setSprite(int spriteIndex) {
+        this.spriteIndex = spriteIndex;
+    }
+
     public double getSpeed() {
         return speed;
     }
@@ -60,5 +64,4 @@ public abstract class AEntity implements IEntity, Serializable {
         }
         this.orientation = orientation;
     }
-
 }

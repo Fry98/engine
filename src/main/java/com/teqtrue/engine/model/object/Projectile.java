@@ -49,7 +49,11 @@ public class Projectile {
         return vec;
     }
 
-    public boolean equals(Projectile p2) {
-        return p2.pos.equals(pos) && p2.vec.equals(vec);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Projectile that = (Projectile) o;
+        return that.pos.equals(pos) && that.vec.equals(vec);
     }
 }
