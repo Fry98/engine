@@ -100,14 +100,14 @@ public class GameScreen implements IApplicationScreen {
             newThread.start();
         }
 
+        // CENTER CAMERA ON PLAYER
+        camera.setX(player.getCoordinates().getX() * GlobalStore.getTileSize() - screenWidth / 2 + GlobalStore.getTileSize() / 2.0);
+        camera.setY(player.getCoordinates().getY() * GlobalStore.getTileSize() - screenHeight / 2 + GlobalStore.getTileSize() / 2.0);                        
+
         // WAIT FOR THREADS TO FINISH
         for (Thread thread : threadPool) {
             thread.join();
         }
-
-        // center camera on the player
-        camera.setX(player.getCoordinates().getX() * GlobalStore.getTileSize() - screenWidth / 2 + GlobalStore.getTileSize() / 2.0);
-        camera.setY(player.getCoordinates().getY() * GlobalStore.getTileSize() - screenHeight / 2 + GlobalStore.getTileSize() / 2.0);
     }
 
     private void draw() {
