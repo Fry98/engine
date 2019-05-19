@@ -87,17 +87,14 @@ public class EditorScreen implements IApplicationScreen {
     }
 
     private void loop() throws InterruptedException {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                new AnimationTimer() {
-                    public void handle(long currentNanoTime) {
-                        if (!freeze) draw();
-                        if (die) this.stop();
-                    }
-                }.start();
-            }
-        });
+        Platform.runLater(() ->
+            new AnimationTimer() {
+                public void handle(long currentNanoTime) {
+                    if (!freeze) draw();
+                    if (die) this.stop();
+                }
+            }.start()
+        );
         while (true) {
             long tickStart = System.currentTimeMillis();
             if (!freeze) update();
@@ -130,11 +127,8 @@ public class EditorScreen implements IApplicationScreen {
                 if (gameMap.getSpawn() != null) {
                     freeze();
                     EditorScreen me = this;
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            SaveScreen.showDialog(me);
-                        }
+                    Platform.runLater(() -> {
+                        SaveScreen.showDialog(me);
                     });
                 }
             } else {

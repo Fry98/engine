@@ -64,17 +64,14 @@ public class LevelSelectScreen implements IApplicationScreen {
     }
 
     private void loop() throws InterruptedException {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                new AnimationTimer() {
-                    public void handle(long currentNanoTime) {
-                        draw();
-                        if (die) this.stop();
-                    }
-                }.start();
-            }
-        });
+        Platform.runLater(() ->
+            new AnimationTimer() {
+                public void handle(long currentNanoTime) {
+                    draw();
+                    if (die) this.stop();
+                }
+            }.start()
+        );
         while (true) {
             long tickStart = System.currentTimeMillis();
             update();

@@ -20,19 +20,16 @@ public class Projectile {
 
     public Runnable update() {
         Projectile me = this;
-        return new Runnable(){
-            @Override
-            public void run() {
-                double newX = pos.getX() + vec.getX() * 0.6;
-                double newY = pos.getY() + vec.getY() * 0.6;
+        return () -> {
+            double newX = pos.getX() + vec.getX() * 0.6;
+            double newY = pos.getY() + vec.getY() * 0.6;
 
-                if (GlobalStore.getMap().hasCollision(new Coordinates(Math.floor(newX), Math.floor(newY)))) {
-                    GlobalStore.getMap().removeProjectile(me);
-                    return;
-                }
-
-                pos = new Coordinates(newX, newY);
+            if (GlobalStore.getMap().hasCollision(new Coordinates(Math.floor(newX), Math.floor(newY)))) {
+                GlobalStore.getMap().removeProjectile(me);
+                return;
             }
+
+            pos = new Coordinates(newX, newY);
         };
     }
 
