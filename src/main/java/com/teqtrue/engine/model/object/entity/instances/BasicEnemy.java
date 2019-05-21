@@ -16,6 +16,7 @@ public class BasicEnemy extends AEntity {
     private int cooldown = 0;
     private static final long serialVersionUID = 1L;
     private int damageCountdown = 0;
+    private boolean playerVisible = false;
 
     public BasicEnemy(Coordinates coordinates) {
         super(coordinates, 8, 5, 70);
@@ -42,19 +43,21 @@ public class BasicEnemy extends AEntity {
                 double dy = playerPos.getY() - pos.getY();
                 double dist = Math.sqrt(dx*dx + dy*dy);
 
-                boolean isVisible = true;
-                double x = pos.getX();
-                double y = pos.getY();
-                for (int i = 0; i <= dist; i++) {
-                    if (gameMap.hasCollision((int) x, (int) y)) {
-                        isVisible = false;
-                        break;
+                if (!playerVisible) {
+                    playerVisible = true;
+                    double x = pos.getX();
+                    double y = pos.getY();
+                    for (int i = 0; i <= dist; i++) {
+                        if (gameMap.hasCollision((int) x, (int) y)) {
+                            playerVisible = false;
+                            break;
+                        }
+                        x += dx / dist;
+                        y += dy / dist;
                     }
-                    x += dx / dist;
-                    y += dy / dist;
                 }
 
-                if (isVisible) {
+                if (playerVisible) {
                     // rotate towards the player
                     if (cooldown == 0) {
                         setOrientation(Math.toDegrees(Math.atan2(dy, dx)) + Math.random() * 40 - 20);
