@@ -202,13 +202,29 @@ public class GameScreen implements IApplicationScreen {
             );
         }
 
-        // DRAW HEALT BAR
+        // DRAW HEALTH BAR
         double unit = GlobalStore.getScreenSize().getX() / player.getMaxHealth();
         double greenLenth = player.getHealth() * unit;
         gc.setFill(Color.GREEN);
         gc.fillRect(0, 0, greenLenth, 20);
         gc.setFill(Color.RED);
         gc.fillRect(greenLenth, 0, GlobalStore.getScreenSize().getX() - greenLenth, 20);
+
+        // DRAW HEALTH BAR ABOVE EACH ENEMY
+        for (IEntity entity : gameMap.getEntities()) {
+            if (entity instanceof Player) {
+                continue;
+            }
+            unit = 1.0 * GlobalStore.getTileSize() / entity.getMaxHealth();
+            greenLenth = entity.getHealth() * unit;
+            Coordinates entityCoords = entity.getCoordinates();
+            double x = entityCoords.getX() * GlobalStore.getTileSize() - camera.getX();
+            double y = entityCoords.getY() * GlobalStore.getTileSize() - camera.getY() - 10;
+            gc.setFill(Color.GREEN);
+            gc.fillRect(x, y, greenLenth, 5);
+            gc.setFill(Color.RED);
+            gc.fillRect(x + greenLenth, y, GlobalStore.getTileSize() - greenLenth, 5);
+        }
     
         // DRAW SCOPE
         GlobalStore.getSprites()[12].drawSprite(gc, KeyMap.getMouse().getX() - GlobalStore.getTileSize() / 2 - 1, KeyMap.getMouse().getY() - GlobalStore.getTileSize() / 2 - 1);
