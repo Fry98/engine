@@ -4,10 +4,14 @@ import com.teqtrue.engine.graphics.Sprite;
 import com.teqtrue.engine.model.Coordinates;
 import com.teqtrue.engine.model.GlobalStore;
 
-public class Projectile {
+import java.io.Serializable;
+
+public class Projectile implements Serializable {
     private Sprite sprite;
     private Coordinates pos;
     private Coordinates vec;
+
+    private static final long serialVersionUID = 1L;
 
     public Projectile(Sprite sprite, Coordinates position, Coordinates movementVector) {
         this.sprite = sprite;

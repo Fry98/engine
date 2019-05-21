@@ -1,6 +1,7 @@
 package com.teqtrue.engine.model.object.entity;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import com.teqtrue.engine.graphics.Sprite;
 import com.teqtrue.engine.model.Coordinates;
@@ -15,4 +16,5 @@ public interface IEntity {
     void setSpeed(double speed);
     double getOrientation();
     void setOrientation(double orientation);
+    UUID getUuid();
 }
