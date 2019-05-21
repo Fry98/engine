@@ -16,10 +16,9 @@ public class BasicEnemy extends AEntity {
     private int cooldown = 0;
     private static final long serialVersionUID = 1L;
     private int damageCountdown = 0;
-    private int health = 100;
 
     public BasicEnemy(Coordinates coordinates) {
-        super(coordinates, 8, 5);
+        super(coordinates, 8, 5, 70);
     }
 
     @Override
@@ -68,14 +67,14 @@ public class BasicEnemy extends AEntity {
             for (Projectile projectile : projectiles) {
                 Coordinates coords = projectile.getPosition();
                 if (coords.getX() > pos.getX() && coords.getX() < pos.getX() + 1 && coords.getY() > pos.getY() && coords.getY() < pos.getY() + 1) {
-                    health -= 7;
+                    adjustHealth(-7);
                     gameMap.removeProjectile(projectile);
                     setSprite(13);
                     damageCountdown = 10;
                 }
             }
 
-            if (health <= 0) {
+            if (getHealth() <= 0) {
                 gameMap.removeEntity(me);
             }
 

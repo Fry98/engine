@@ -16,14 +16,18 @@ public abstract class AEntity implements IEntity, Serializable {
     private int spriteIndex;
     private double speed;
     private double orientation;
+    private int maxHealth;
+    private int health;
     private UUID uuid;
     private static final long serialVersionUID = 1L;
 
-    public AEntity(Coordinates coordinates, int sprite, double speed) {
+    public AEntity(Coordinates coordinates, int sprite, double speed, int maxHealth) {
         this.spriteIndex = sprite;
         this.coordinates = coordinates;
         this.speed = speed;
         this.orientation = 0;
+        this.maxHealth = maxHealth;
+        this.health = maxHealth;
         this.uuid = UUID.randomUUID();
     }
 
@@ -71,6 +75,26 @@ public abstract class AEntity implements IEntity, Serializable {
 
     public UUID getUuid() {
         return uuid;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    public void adjustHealth(int health) {
+        this.health += health;
+    }
+
+    public int getMaxHealth() {
+        return maxHealth;
+    }
+
+    public void setMaxHealth(int maxHealth) {
+        this.maxHealth = maxHealth;
     }
 
     @Override

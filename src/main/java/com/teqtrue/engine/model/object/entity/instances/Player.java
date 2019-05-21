@@ -19,10 +19,9 @@ public class Player extends AEntity {
     private int cooldown = 0;
     private static final long serialVersionUID = 1L;
     private int damageCountdown = 0;
-    private int health = 100;
 
     public Player(Coordinates coordinates) {
-        super(coordinates, 7, 8);
+        super(coordinates, 7, 8, 100);
     }
 
     @Override
@@ -43,14 +42,14 @@ public class Player extends AEntity {
             for (Projectile projectile : projectiles) {
                 Coordinates coords = projectile.getPosition();
                 if (coords.getX() > pos.getX() && coords.getX() < pos.getX() + 1 && coords.getY() > pos.getY() && coords.getY() < pos.getY() + 1) {
-                    health -= 5;
+                    adjustHealth(-5);
                     gameMap.removeProjectile(projectile);
                     setSprite(14);
                     damageCountdown = 10;
                 }
             }
 
-            if (health <= 0) {
+            if (getHealth() <= 0) {
                 parent.kill();
             }
 
@@ -107,9 +106,5 @@ public class Player extends AEntity {
             double dy = mouse.getY() - screenSize.getY() / 2;
             setOrientation(Math.toDegrees(Math.atan2(dy, dx)));
         };
-    }
-
-    public int getHealth() {
-        return health;
     }
 }

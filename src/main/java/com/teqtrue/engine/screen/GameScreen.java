@@ -203,7 +203,7 @@ public class GameScreen implements IApplicationScreen {
         }
 
         // DRAW HEALT BAR
-        double unit = GlobalStore.getScreenSize().getX() / 100;
+        double unit = GlobalStore.getScreenSize().getX() / player.getMaxHealth();
         double greenLenth = player.getHealth() * unit;
         gc.setFill(Color.GREEN);
         gc.fillRect(0, 0, greenLenth, 20);

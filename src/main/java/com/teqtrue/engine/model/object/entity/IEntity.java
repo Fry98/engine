@@ -17,5 +17,10 @@ public interface IEntity {
     void setSpeed(double speed);
     double getOrientation();
     void setOrientation(double orientation);
+    int getHealth();
+    void setHealth(int h);
+    void adjustHealth(int h);
+    int getMaxHealth();
+    void setMaxHealth(int maxHealth);
     UUID getUuid();
 }
