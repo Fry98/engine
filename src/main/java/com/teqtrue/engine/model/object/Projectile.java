@@ -5,11 +5,14 @@ import com.teqtrue.engine.model.Coordinates;
 import com.teqtrue.engine.model.GlobalStore;
 
 import java.io.Serializable;
+import java.util.Objects;
+import java.util.UUID;
 
 public class Projectile implements Serializable {
     private Sprite sprite;
     private Coordinates pos;
     private Coordinates vec;
+    private UUID uuid;
 
     private static final long serialVersionUID = 1L;
 
@@ -20,6 +23,7 @@ public class Projectile implements Serializable {
             position.getY() + movementVector.getY() * 0.75
         );
         vec = movementVector;
+        uuid = UUID.randomUUID();
     }
 
     public Runnable update() {
@@ -53,11 +57,20 @@ public class Projectile implements Serializable {
         return vec;
     }
 
+    public UUID getUuid() {
+        return uuid;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Projectile that = (Projectile) o;
-        return that.pos.equals(pos) && that.vec.equals(vec);
+        return Objects.equals(uuid, that.getUuid());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uuid);
     }
 }
