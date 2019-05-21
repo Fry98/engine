@@ -40,26 +40,43 @@ public class BasicEnemy extends AEntity {
                 Coordinates playerPos = player.getCoordinates();
                 double dx = playerPos.getX() - pos.getX();
                 double dy = playerPos.getY() - pos.getY();
+                double dist = Math.sqrt(dx*dx + dy*dy);
 
-                // rotate towards the player
-                setOrientation(Math.toDegrees(Math.atan2(dy, dx)));
-
-                // run towards the player
-                if (dx*dx + dy*dy > 4) {
-                    newX += Math.cos(getOrientation(true)) * getSpeed() * 0.02;
-                    newY += Math.sin(getOrientation(true)) * getSpeed() * 0.02;
+                boolean isVisible = true;
+                double x = pos.getX();
+                double y = pos.getY();
+                for (int i = 0; i <= dist; i++) {
+                    if (gameMap.hasCollision((int) x, (int) y)) {
+                        isVisible = false;
+                        break;
+                    }
+                    x += dx / dist;
+                    y += dy / dist;
                 }
 
-                // shoot at him
-                if (cooldown == 0) {
-                    double orientation = getOrientation();
+                if (isVisible) {
+                    // rotate towards the player
+                    if (cooldown == 0) {
+                        setOrientation(Math.toDegrees(Math.atan2(dy, dx)) + Math.random() * 40 - 20);
+                    }
 
-                    gameMap.addProjectile(new Projectile(
-                            GlobalStore.getSprites()[9],
-                            new Coordinates(newX + 0.5, newY + 0.5),
-                            new Coordinates(Math.cos(Math.toRadians(orientation)), Math.sin(Math.toRadians(orientation)))
-                    ));
-                    cooldown = 10;
+                    // run towards the player
+                    if (dist > 2) {
+                        newX += Math.cos(getOrientation(true)) * getSpeed() * 0.02;
+                        newY += Math.sin(getOrientation(true)) * getSpeed() * 0.02;
+                    }
+
+                    // shoot at him
+                    if (cooldown == 0) {
+                        double orientation = getOrientation();
+
+                        gameMap.addProjectile(new Projectile(
+                                GlobalStore.getSprites()[9],
+                                new Coordinates(newX + 0.5, newY + 0.5),
+                                new Coordinates(Math.cos(Math.toRadians(orientation)), Math.sin(Math.toRadians(orientation)))
+                        ));
+                        cooldown = 10;
+                    }
                 }
             }
 
