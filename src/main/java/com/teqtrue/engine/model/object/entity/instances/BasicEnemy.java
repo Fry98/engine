@@ -6,6 +6,7 @@ import com.teqtrue.engine.model.GlobalStore;
 import com.teqtrue.engine.model.object.Projectile;
 import com.teqtrue.engine.model.object.entity.AEntity;
 import com.teqtrue.engine.model.object.entity.IEntity;
+import com.teqtrue.engine.screen.GameScreen;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,7 @@ public class BasicEnemy extends AEntity {
     }
 
     @Override
-    public Runnable update(ArrayList<Projectile> projectiles) {
+    public Runnable update(ArrayList<Projectile> projectiles, GameScreen parent) {
         BasicEnemy me = this;
         return () -> {
             Coordinates pos = getCoordinates();
@@ -59,7 +60,7 @@ public class BasicEnemy extends AEntity {
                             new Coordinates(newX + 0.5, newY + 0.5),
                             new Coordinates(Math.cos(Math.toRadians(orientation)), Math.sin(Math.toRadians(orientation)))
                     ));
-                    cooldown = 5;
+                    cooldown = 10;
                 }
             }
 

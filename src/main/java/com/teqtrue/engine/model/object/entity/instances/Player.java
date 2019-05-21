@@ -9,6 +9,7 @@ import com.teqtrue.engine.model.GameMap;
 import com.teqtrue.engine.model.KeyMap;
 import com.teqtrue.engine.model.object.Projectile;
 import com.teqtrue.engine.model.object.entity.AEntity;
+import com.teqtrue.engine.screen.GameScreen;
 
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
@@ -17,13 +18,15 @@ public class Player extends AEntity {
 
     private int cooldown = 0;
     private static final long serialVersionUID = 1L;
+    private int damageCountdown = 0;
+    private int health = 100;
 
     public Player(Coordinates coordinates) {
         super(coordinates, 7, 8);
     }
 
     @Override
-    public Runnable update(ArrayList<Projectile> projectiles) {
+    public Runnable update(ArrayList<Projectile> projectiles, GameScreen parent) {
         return () -> {
             // WASD+Shift movement
             Coordinates pos = getCoordinates();
@@ -35,6 +38,28 @@ public class Player extends AEntity {
             }
             double newX = pos.getX() + movementVector.getX() * getSpeed() * speedMult * 0.02;
             double newY = pos.getY() + movementVector.getY() * getSpeed() * speedMult * 0.02;
+
+            // projectile collisions
+            for (Projectile projectile : projectiles) {
+                Coordinates coords = projectile.getPosition();
+                if (coords.getX() > pos.getX() && coords.getX() < pos.getX() + 1 && coords.getY() > pos.getY() && coords.getY() < pos.getY() + 1) {
+                    health -= 5;
+                    gameMap.removeProjectile(projectile);
+                    setSprite(14);
+                    damageCountdown = 10;
+                }
+            }
+
+            if (health <= 0) {
+                parent.kill();
+            }
+
+            if (damageCountdown > 0) {
+                damageCountdown--;
+                if (damageCountdown == 0) {
+                    setSprite(7);
+                }
+            }
 
             // vertical collisions
             if (movementVector.getY() < 0) {
@@ -82,5 +107,9 @@ public class Player extends AEntity {
             double dy = mouse.getY() - screenSize.getY() / 2;
             setOrientation(Math.toDegrees(Math.atan2(dy, dx)));
         };
+    }
+
+    public int getHealth() {
+        return health;
     }
 }

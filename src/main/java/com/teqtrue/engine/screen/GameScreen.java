@@ -3,6 +3,7 @@ package com.teqtrue.engine.screen;
 import com.teqtrue.engine.model.GlobalStore;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.teqtrue.engine.model.Coordinates;
 import com.teqtrue.engine.model.GameMap;
@@ -84,9 +85,15 @@ public class GameScreen implements IApplicationScreen {
         // THREADS FOR ENTITY UPDATE
         ArrayList<Thread> threadPool = new ArrayList<>();
         ArrayList<Projectile> projectiles = gameMap.getProjectiles();
+        List<IEntity> entities = gameMap.getEntities();
 
-        for (IEntity entity : gameMap.getEntities()) {
-            Thread newThread = new Thread(entity.update(projectiles));
+        if (entities.size() == 1) {
+            die = true;
+            return;
+        }
+
+        for (IEntity entity : entities) {
+            Thread newThread = new Thread(entity.update(projectiles, this));
             threadPool.add(newThread);
             newThread.start();
         }
@@ -110,7 +117,7 @@ public class GameScreen implements IApplicationScreen {
 
     private void draw() {
         // CLEAR SCREEN
-        gc.setFill(Color.BLACK);
+        gc.setFill(Color.web("141d1c"));
         gc.fillRect(0, 0, GlobalStore.getScreenSize().getX(), GlobalStore.getScreenSize().getY());
 
         // DRAW OBJECTS IN GAMEMAP
@@ -194,6 +201,14 @@ public class GameScreen implements IApplicationScreen {
                 projectile.getPosition().getY() * GlobalStore.getTileSize() - GlobalStore.getTileSize() / 2 - camera.getY()
             );
         }
+
+        // DRAW HEALT BAR
+        double unit = GlobalStore.getScreenSize().getX() / 100;
+        double greenLenth = player.getHealth() * unit;
+        gc.setFill(Color.GREEN);
+        gc.fillRect(0, 0, greenLenth, 20);
+        gc.setFill(Color.RED);
+        gc.fillRect(greenLenth, 0, GlobalStore.getScreenSize().getX() - greenLenth, 20);
     
         // DRAW SCOPE
         GlobalStore.getSprites()[12].drawSprite(gc, KeyMap.getMouse().getX() - GlobalStore.getTileSize() / 2 - 1, KeyMap.getMouse().getY() - GlobalStore.getTileSize() / 2 - 1);
@@ -204,4 +219,7 @@ public class GameScreen implements IApplicationScreen {
         return new LevelSelectScreen(new GameScreen(), false);
     }
 
+    public void kill() {
+        die = true;
+    }
 }
