@@ -50,7 +50,7 @@ public class Player extends AEntity {
             }
 
             if (getHealth() <= 0) {
-                parent.kill();
+                parent.kill(false);
             }
 
             if (damageCountdown > 0) {

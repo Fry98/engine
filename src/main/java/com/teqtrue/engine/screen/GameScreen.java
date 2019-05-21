@@ -15,10 +15,14 @@ import com.teqtrue.engine.model.object.entity.instances.Player;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
+import javafx.geometry.VPos;
 import javafx.scene.Cursor;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.TextAlignment;
 
 public class GameScreen implements IApplicationScreen {
 
@@ -29,14 +33,13 @@ public class GameScreen implements IApplicationScreen {
     private boolean die;
     private double screenWidth = GlobalStore.getScreenSize().getX();
     private double screenHeight = GlobalStore.getScreenSize().getY();
+    private EndScreen endScreen = EndScreen.NONE;
 
     @Override
     public void init(GraphicsContext gc) {
         gameMap = GlobalStore.getMap();
 
         // GraphicsContext SETUP
-        gc.setStroke(Color.RED);
-        gc.setLineWidth(1);
         gc.getCanvas().getScene().setCursor(Cursor.NONE);
         this.gc = gc;
 
@@ -57,14 +60,13 @@ public class GameScreen implements IApplicationScreen {
     }
 
     private void loop() throws InterruptedException {
-        Platform.runLater(() ->
-            new AnimationTimer() {
-                public void handle(long currentNanoTime) {
-                    draw();
-                    if (die) this.stop();
-                }
-            }.start()
-        );
+        Platform.runLater(() -> new AnimationTimer() {
+            public void handle(long currentNanoTime) {
+                draw();
+                if (die)
+                    this.stop();
+            }
+        }.start());
         while (true) {
             long tickStart = System.currentTimeMillis();
             update();
@@ -73,7 +75,8 @@ public class GameScreen implements IApplicationScreen {
             if (timeout > 0) {
                 Thread.sleep(20 - tickDuration);
             }
-            if (die) break;
+            if (die)
+                break;
         }
     }
 
@@ -86,11 +89,6 @@ public class GameScreen implements IApplicationScreen {
         ArrayList<Thread> threadPool = new ArrayList<>();
         ArrayList<Projectile> projectiles = gameMap.getProjectiles();
         List<IEntity> entities = gameMap.getEntities();
-
-        if (entities.size() == 1) {
-            die = true;
-            return;
-        }
 
         for (IEntity entity : entities) {
             Thread newThread = new Thread(entity.update(projectiles, this));
@@ -106,12 +104,19 @@ public class GameScreen implements IApplicationScreen {
         }
 
         // CENTER CAMERA ON PLAYER
-        camera.setX(player.getCoordinates().getX() * GlobalStore.getTileSize() - screenWidth / 2 + GlobalStore.getTileSize() / 2.0);
-        camera.setY(player.getCoordinates().getY() * GlobalStore.getTileSize() - screenHeight / 2 + GlobalStore.getTileSize() / 2.0);                        
+        camera.setX(player.getCoordinates().getX() * GlobalStore.getTileSize() - screenWidth / 2
+                + GlobalStore.getTileSize() / 2.0);
+        camera.setY(player.getCoordinates().getY() * GlobalStore.getTileSize() - screenHeight / 2
+                + GlobalStore.getTileSize() / 2.0);
 
         // WAIT FOR THREADS TO FINISH
         for (Thread thread : threadPool) {
             thread.join();
+        }
+
+        if (entities.size() == 1) {
+            kill(true);
+            return;
         }
     }
 
@@ -160,55 +165,66 @@ public class GameScreen implements IApplicationScreen {
         double lineEndY = 0;
         double ratio = 0;
 
-        switch(closest) {
-            case 0:
-                ratio = mouseCenteredY / mouseCenteredX;
-                lineEndX = -(screenWidth / 2);
-                lineEndY = lineEndX * ratio;
-                break;
-            case 1:
-                ratio = mouseCenteredX / mouseCenteredY;
-                lineEndY = -(screenHeight / 2);
-                lineEndX = lineEndY * ratio;
-                break;
-            case 2:
-                ratio = mouseCenteredY / mouseCenteredX;
-                lineEndX = screenWidth / 2;
-                lineEndY = lineEndX * ratio;
-                break;
-            case 3:
-                ratio = mouseCenteredX / mouseCenteredY;
-                lineEndY = screenHeight / 2;
-                lineEndX = lineEndY * ratio;
-                break;
+        switch (closest) {
+        case 0:
+            ratio = mouseCenteredY / mouseCenteredX;
+            lineEndX = -(screenWidth / 2);
+            lineEndY = lineEndX * ratio;
+            break;
+        case 1:
+            ratio = mouseCenteredX / mouseCenteredY;
+            lineEndY = -(screenHeight / 2);
+            lineEndX = lineEndY * ratio;
+            break;
+        case 2:
+            ratio = mouseCenteredY / mouseCenteredX;
+            lineEndX = screenWidth / 2;
+            lineEndY = lineEndX * ratio;
+            break;
+        case 3:
+            ratio = mouseCenteredX / mouseCenteredY;
+            lineEndY = screenHeight / 2;
+            lineEndX = lineEndY * ratio;
+            break;
         }
-        
+
+        gc.setStroke(Color.RED);
+        gc.setLineWidth(1);
         gc.strokeLine(screenWidth / 2, screenHeight / 2, lineEndX + screenWidth / 2, lineEndY + screenHeight / 2);
 
         // DRAW ENTITITES
         for (IEntity entity : gameMap.getEntities()) {
             Coordinates entityCoords = entity.getCoordinates();
-            if (entityCoords.getX() >= leftX && entityCoords.getX() <= rightX && entityCoords.getY() >= upY && entityCoords.getY() <= downY) {
-                entity.getSprite().drawSprite(gc, (entityCoords.getX() * GlobalStore.getTileSize()) - camera.getX(), (entityCoords.getY() * GlobalStore.getTileSize()) - camera.getY(), entity.getOrientation());
+            if (entityCoords.getX() >= leftX && entityCoords.getX() <= rightX && entityCoords.getY() >= upY
+                    && entityCoords.getY() <= downY) {
+                entity.getSprite().drawSprite(gc, (entityCoords.getX() * GlobalStore.getTileSize()) - camera.getX(),
+                        (entityCoords.getY() * GlobalStore.getTileSize()) - camera.getY(), entity.getOrientation());
             }
         }
 
         // DRAW PROJECTILES
         for (Projectile projectile : gameMap.getProjectiles()) {
-            projectile.getSprite().drawSprite(
-                gc,
-                projectile.getPosition().getX() * GlobalStore.getTileSize() - GlobalStore.getTileSize() / 2 - camera.getX(),
-                projectile.getPosition().getY() * GlobalStore.getTileSize() - GlobalStore.getTileSize() / 2 - camera.getY()
-            );
+            projectile.getSprite().drawSprite(gc,
+                    projectile.getPosition().getX() * GlobalStore.getTileSize() - GlobalStore.getTileSize() / 2
+                            - camera.getX(),
+                    projectile.getPosition().getY() * GlobalStore.getTileSize() - GlobalStore.getTileSize() / 2
+                            - camera.getY());
         }
 
         // DRAW HEALTH BAR
-        double unit = GlobalStore.getScreenSize().getX() / player.getMaxHealth();
-        double greenLenth = player.getHealth() * unit;
+        double screen = GlobalStore.getScreenSize().getX() - 80;
+        double unit = screen / player.getMaxHealth();
+        double greenLength = player.getHealth() * unit;
         gc.setFill(Color.GREEN);
-        gc.fillRect(0, 0, greenLenth, 20);
-        gc.setFill(Color.RED);
-        gc.fillRect(greenLenth, 0, GlobalStore.getScreenSize().getX() - greenLenth, 20);
+        gc.fillRect(40, 15, greenLength, 30);
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(2);
+        if (player.getHealth() < 100) {
+            gc.setFill(Color.RED);
+            gc.fillRect(greenLength + 40, 15, screen - greenLength, 30);
+            gc.strokeLine(greenLength + 40, 15, greenLength + 40, 45);
+        }
+        gc.strokeRect(40, 15, screen, 30);
 
         // DRAW HEALTH BAR ABOVE EACH ENEMY
         for (IEntity entity : gameMap.getEntities()) {
@@ -216,18 +232,40 @@ public class GameScreen implements IApplicationScreen {
                 continue;
             }
             unit = 1.0 * GlobalStore.getTileSize() / entity.getMaxHealth();
-            greenLenth = entity.getHealth() * unit;
+            greenLength = entity.getHealth() * unit;
             Coordinates entityCoords = entity.getCoordinates();
             double x = entityCoords.getX() * GlobalStore.getTileSize() - camera.getX();
             double y = entityCoords.getY() * GlobalStore.getTileSize() - camera.getY() - 10;
             gc.setFill(Color.GREEN);
-            gc.fillRect(x, y, greenLenth, 5);
+            gc.fillRect(x, y, greenLength, 5);
             gc.setFill(Color.RED);
-            gc.fillRect(x + greenLenth, y, GlobalStore.getTileSize() - greenLenth, 5);
+            gc.fillRect(x + greenLength, y, GlobalStore.getTileSize() - greenLength, 5);
         }
-    
+
         // DRAW SCOPE
-        GlobalStore.getSprites()[12].drawSprite(gc, KeyMap.getMouse().getX() - GlobalStore.getTileSize() / 2 - 1, KeyMap.getMouse().getY() - GlobalStore.getTileSize() / 2 - 1);
+        GlobalStore.getSprites()[12].drawSprite(gc, KeyMap.getMouse().getX() - GlobalStore.getTileSize() / 2 - 1,
+                KeyMap.getMouse().getY() - GlobalStore.getTileSize() / 2 - 1);
+
+        // DRAW END SCREEN
+        if (endScreen != EndScreen.NONE) {
+            gc.setGlobalAlpha(0.5);
+            gc.setFill(Color.WHITE);
+            gc.fillRect(0, 0, GlobalStore.getScreenSize().getX(), GlobalStore.getScreenSize().getY());
+            gc.setGlobalAlpha(1);
+            gc.setTextAlign(TextAlignment.CENTER);
+            gc.setTextBaseline(VPos.CENTER);
+            gc.setFont(Font.font("Arial", FontWeight.BOLD, 50));
+            switch (endScreen) {
+                case WINNER:
+                    gc.setFill(Color.GREEN);
+                    gc.fillText("YOU WIN!", GlobalStore.getScreenSize().getX() / 2, GlobalStore.getScreenSize().getY() / 2);
+                    break;
+                case LOSER:
+                    gc.setFill(Color.RED);
+                    gc.fillText("YOU LOSE!", GlobalStore.getScreenSize().getX() / 2, GlobalStore.getScreenSize().getY() / 2);
+                    break;
+            }
+        }
     }
 
     @Override
@@ -235,7 +273,24 @@ public class GameScreen implements IApplicationScreen {
         return new LevelSelectScreen(new GameScreen(), false);
     }
 
-    public void kill() {
+    public void kill(boolean winner) {
+        if (winner) {
+            endScreen = EndScreen.WINNER;
+        } else {
+            endScreen = EndScreen.LOSER;
+        }
+        
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         die = true;
+    }
+
+    private enum EndScreen {
+        WINNER,
+        LOSER,
+        NONE
     }
 }

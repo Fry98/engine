@@ -40,9 +40,6 @@ public class LevelSelectScreen implements IApplicationScreen {
     public void init(GraphicsContext gc) {
         this.gc = gc;
 
-        gc.setStroke(Color.BLACK);
-        gc.setLineWidth(3);
-
         File folder = new File("src/main/levels");
         files = new ArrayList<>(Arrays.asList(folder.listFiles()));
 
@@ -139,6 +136,8 @@ public class LevelSelectScreen implements IApplicationScreen {
         gc.fillText("Level Select", gc.getCanvas().getWidth() / 2, 20);
         
         // LEVEL CARDS
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(3);
         gc.setTextBaseline(VPos.CENTER);
         gc.setFont(Font.font("Arial", 30));
         int cardPositionY = cardOffsetY;

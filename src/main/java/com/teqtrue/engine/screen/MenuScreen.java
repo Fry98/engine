@@ -103,7 +103,7 @@ public class MenuScreen implements IApplicationScreen {
         gc.setFill(Color.BLACK);
         gc.setTextAlign(TextAlignment.CENTER);
         gc.setFont(Font.font("Arial", 70));
-        gc.fillText("THE GAME", gc.getCanvas().getWidth() / 2, gc.getCanvas().getHeight() / 5);
+        gc.fillText("THREAT OF THE THREAD", gc.getCanvas().getWidth() / 2, gc.getCanvas().getHeight() / 5);
 
         // BUTTONS
         gc.setFill(Color.BLACK);
