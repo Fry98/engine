@@ -72,7 +72,7 @@ class FileUtilTest {
 
         // cleanup
         try {
-            Files.delete(Path.of("src/main/levels/" + MAP_NAME));
+            Files.delete(Path.of(MAP_NAME));
         } catch (IOException e) {
             e.printStackTrace();
         }
