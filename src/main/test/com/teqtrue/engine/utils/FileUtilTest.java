@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class FileUtilTest {
 
-    private final String MAP_NAME = "test.map";
+    private final String MAP_NAME = "src/main/levels/test.map";
     Random random = new Random();
 
     @BeforeAll

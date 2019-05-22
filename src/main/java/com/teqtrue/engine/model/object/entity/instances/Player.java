@@ -20,6 +20,10 @@ public class Player extends AEntity {
     private static final long serialVersionUID = 1L;
     private int damageCountdown = 0;
 
+    /**
+     * Creates new player.
+     * @param coordinates initial position
+     */
     public Player(Coordinates coordinates) {
         super(coordinates, 7, 8, 100);
     }

@@ -11,6 +11,11 @@ public class KeyMap {
     private static Coordinates mousePosition = new Coordinates(0, 0);
     private static boolean clickedNow = false;
 
+    /**
+     * Updates pressed status of the key.
+     * @param keyCode key identification
+     * @param unset if {@code false}, the key is pressed, if {@code true}, the key is no longer pressed
+     */
     public static void setKey(KeyCode keyCode, boolean unset) {
         if (!unset) {
             keys.add(keyCode);
@@ -19,18 +24,33 @@ public class KeyMap {
         }
     }
 
+    /**
+     * Returns {@code true} if the key is currently pressed, {@code false} otherwise.
+     * @param keyCode key identification
+     */
     public static boolean isPressed(int keyCode) {
         return keys.stream().anyMatch(k -> k.getCode() == keyCode);
     }
 
+    /**
+     * Returns {@code true} if the key is currently pressed, {@code false} otherwise.
+     * @param keyName key identification
+     */
     public static boolean isPressed(String keyName) {
         return keys.stream().anyMatch(k -> keyName.equals(k.getName()));
     }
 
+    /**
+     * Returns {@code true} if the key is currently pressed, {@code false} otherwise.
+     * @param keyCode key identification
+     */
     public static boolean isPressed(KeyCode keyCode) {
         return keys.contains(keyCode);
     }
 
+    /**
+     * Returns a vector on unit circle where the player should move based on WASD press.
+     */
     public static Coordinates getMovementVector() {
         Coordinates vec = new Coordinates(0, 0);
 
@@ -56,6 +76,11 @@ public class KeyMap {
         return vec;
     }
 
+    /**
+     * Updates pressed status of the mouse button.
+     * @param button button identification
+     * @param unset if {@code false}, the key is pressed, if {@code true}, the key is no longer pressed
+     */
     public static void setMousePressed(MouseButton button, boolean unset) {
         if (!unset) {
             mouse.add(button);
@@ -67,10 +92,17 @@ public class KeyMap {
         }
     }
 
+    /**
+     * Returns {@code true} if the mouse button is currently pressed, {@code false} otherwise.
+     * @param button mouse button identification
+     */
     public static boolean isMousePressed(MouseButton button) {
         return mouse.contains(button);
     }
 
+    /**
+     * Returns {@code true} if and only if exactly one mouse button is pressed at the time, {@code false} otherwise.
+     */
     public static boolean isMouseSinglePress() {
         return (mouse.size() == 1);
     }
@@ -83,15 +115,26 @@ public class KeyMap {
         return false;
     }
 
+    /**
+     * Updates recorded position of the mouse cursor
+     * @param x first coordinate
+     * @param y second coordinate
+     */
     public static void setMousePosition(double x, double y) {
         mousePosition.setX(x);
         mousePosition.setY(y);
     }
 
+    /**
+     * Returns current position of the mouse cursor.
+     */
     public static Coordinates getMouse() {
         return mousePosition;
     }
 
+    /**
+     * Clears all key and mouse press information.
+     */
     public static void clear() {
         keys.clear();
         mouse.clear();

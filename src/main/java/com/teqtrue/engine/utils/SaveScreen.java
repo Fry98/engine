@@ -17,6 +17,11 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 public class SaveScreen {
+
+    /**
+     * Displays a dialog to set name for a level and saves it.
+     * @param parent {@code EditorScreen} instance from which the save screen is called
+     */
     public static void showDialog(EditorScreen parent) {
 
         KeyMap.clear();
@@ -61,7 +66,7 @@ public class SaveScreen {
         });
 
         save.setOnMouseClicked(e -> {
-            if (saveMap(name.getText(), parent)) {
+            if (saveMap(name.getText(), parent.getMap())) {
                 newWindow.hide();
                 parent.restore();
             } else {
@@ -70,7 +75,13 @@ public class SaveScreen {
         });
     }
 
-    private static boolean saveMap(String lvlName, EditorScreen parent) {
+    /**
+     * Saves a map from editor screen into a file.
+     * @param lvlName name of the level which is shown to users
+     * @param map game map to save
+     * @return {@code true} if the saving was successful, {@code false} otherwise
+     */
+    private static boolean saveMap(String lvlName, GameMap map) {
         if (lvlName.trim().isEmpty()) {
             return false;
         }
@@ -82,9 +93,8 @@ public class SaveScreen {
             filename = generateFilename() + ".map";
         } while (Arrays.stream(files).map(File::getName).anyMatch(Predicate.isEqual(filename)));
 
-        GameMap map = parent.getMap();
         map.setName(lvlName);
-        FileUtil.saveObject(map, filename);
+        FileUtil.saveObject(map, "src/main/levels/" + filename);
         return true;
     }
 

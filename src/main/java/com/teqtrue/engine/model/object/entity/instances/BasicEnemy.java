@@ -18,6 +18,10 @@ public class BasicEnemy extends AEntity {
     private int damageCountdown = 0;
     private boolean playerVisible = false;
 
+    /**
+     * Creates new basic enemy NPC.
+     * @param coordinates initial position
+     */
     public BasicEnemy(Coordinates coordinates) {
         super(coordinates, 8, 5, 70);
     }

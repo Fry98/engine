@@ -49,7 +49,7 @@ public class LevelSelectScreen implements IApplicationScreen {
                 i--;
                 continue;
             }
-            levels.add(FileUtil.loadObject(files.get(i).getName(), GameMap.class));
+            levels.add(FileUtil.loadObject(files.get(i).getPath(), GameMap.class));
         }
 
         // START LOOP

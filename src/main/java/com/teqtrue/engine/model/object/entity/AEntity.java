@@ -21,6 +21,13 @@ public abstract class AEntity implements IEntity, Serializable {
     private UUID uuid;
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Creates a new entity.
+     * @param coordinates initial position
+     * @param sprite sprite index
+     * @param speed initial and maximal speed
+     * @param maxHealth initial and maximal health
+     */
     public AEntity(Coordinates coordinates, int sprite, double speed, int maxHealth) {
         this.spriteIndex = sprite;
         this.coordinates = coordinates;
@@ -43,7 +50,7 @@ public abstract class AEntity implements IEntity, Serializable {
         return GlobalStore.getSprites()[spriteIndex];
     }
 
-    protected void setSprite(int spriteIndex) {
+    public void setSprite(int spriteIndex) {
         this.spriteIndex = spriteIndex;
     }
 

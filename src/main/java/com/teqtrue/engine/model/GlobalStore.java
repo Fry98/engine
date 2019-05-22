@@ -17,6 +17,10 @@ public class GlobalStore {
     private static final int TILE_SIZE = 48;
     private static final Coordinates SCREEN_SIZE = new Coordinates(960,  720);
 
+    /**
+     * Initializes global properties of the engine, eg. loads sprite sheet and sets game object properties.
+     * Call only once per run.
+     */
     public static void init() {
         try {
             // LOAD SPRITESHEET
@@ -50,30 +54,52 @@ public class GlobalStore {
         }
     }
 
+    /**
+     * Returns width of one tile in pixels.
+     */
     public static int getTileSize() {
         return TILE_SIZE;
     }
 
+    /**
+     * Returns a {@code Coordinates} pair with the size of the screen in pixels.
+     */
     public static final Coordinates getScreenSize() {
         return SCREEN_SIZE;
     }
 
+    /**
+     * Returns an image spritesheet.
+     */
     public static Image getSpritesheet() {
         return spritesheet;
     }
 
+    /**
+     * Returns an array of all available sprites.
+     */
     public static Sprite[] getSprites() {
         return sprites;
     }
 
+    /**
+     * Returns an array of all game objects known to the engine.
+     */
     public static GameObject[] getRegisteredObjects() {
         return registeredObjects;
     }
 
+    /**
+     * Sets a current {@code GameMap}.
+     * @param gameMap current game
+     */
     public static void setMap(GameMap gameMap) {
         map = gameMap;
     }
 
+    /**
+     * Returns a {@code GameMap} of the current game.
+     */
     public static GameMap getMap() {
         return map;
     }

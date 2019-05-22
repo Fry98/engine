@@ -8,36 +8,67 @@ public class Coordinates implements Serializable {
     private double x, y;
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Creates a copy of another {@code Coordinates} object.
+     * @param other coordinates which will be copied to this instance
+     */
     public Coordinates(Coordinates other) {
         this.x = other.getX();
         this.y = other.getY();
     }
 
+    /**
+     * Creates new {@code Coordinates} from a coordinate pair.
+     * @param x position on the first axis
+     * @param y position on the second axis
+     */
     public Coordinates(double x, double y) {
         this.x = x;
         this.y = y;
     }
 
+    /**
+     * Returns position on the first axis.
+     */
     public double getX() {
         return x;
     }
 
+    /**
+     * Sets position on the first axis.
+     * @param x position to set
+     */
     public void setX(double x) {
         this.x = x;
     }
 
+    /**
+     * Returns position on the second axis.
+     */
     public double getY() {
         return y;
     }
 
+    /**
+     * Sets position on the second axis.
+     * @param y position to set
+     */
     public void setY(double y) {
         this.y = y;
     }
 
+    /**
+     * Modifies position on the first axis.
+     * @param x this number will be added to the current first axis value
+     */
     public void alterX(double x) {
         this.x += x;
     }
 
+    /**
+     * Modifies position on the second axis.
+     * @param y this number will be added to the current second axis value
+     */
     public void alterY(double y) {
         this.y += y;
     }

@@ -36,10 +36,23 @@ public class Sprite {
         this.sh = sh-1;
     }
 
+    /**
+     * Draws the sprite on canvas.
+     * @param gc canvas on which to draw
+     * @param x first coordinate
+     * @param y second coordinate
+     */
     public void drawSprite(GraphicsContext gc, double x, double y) {
         gc.drawImage(image, sx, sy, sw, sh, x, y, sw+1, sh+1);
     }
 
+    /**
+     * Draws the rotated sprite on canvas.
+     * @param gc canvas on which to draw
+     * @param x first coordinate
+     * @param y second coordinate
+     * @param r rotation in degrees, {@code 0} is to the right
+     */
     public void drawSprite(GraphicsContext gc, double x, double y, double r) {
         gc.save();
         Rotate rot = new Rotate(r-90, x + GlobalStore.getTileSize() / 2.0, y + GlobalStore.getTileSize() / 2.0);
