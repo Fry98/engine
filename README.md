@@ -39,4 +39,4 @@ Modrý čtverec představuje místo kde se objeví hráč po startu hry, v každ
 ## Credits
 Vytvořil:
 - [Filip Toman (Fry98)](https://github.com/fry98)
-- Jakub Lukeš
+- [Jakub Lukeš](https://github.com/jakluk)
