@@ -28,7 +28,6 @@ public class BasicEnemy extends AEntity {
 
     @Override
     public Runnable update(GameScreen parent) {
-        BasicEnemy me = this;
         return () -> {
             Coordinates pos = getCoordinates();
             GameMap gameMap = GlobalStore.getMap();
@@ -100,7 +99,7 @@ public class BasicEnemy extends AEntity {
             }
 
             if (getHealth() <= 0) {
-                gameMap.removeEntity(me);
+                gameMap.removeEntity(this);
             }
 
             if (damageCountdown > 0) {

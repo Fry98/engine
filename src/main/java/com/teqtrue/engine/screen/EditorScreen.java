@@ -126,9 +126,8 @@ public class EditorScreen implements IApplicationScreen {
             if (KeyMap.isPressed(KeyCode.CONTROL)) {
                 if (gameMap.getSpawn() != null) {
                     freeze();
-                    EditorScreen me = this;
                     Platform.runLater(() -> {
-                        SaveScreen.showDialog(me);
+                        SaveScreen.showDialog(this);
                     });
                 }
             } else {

@@ -3,6 +3,7 @@ package com.teqtrue.engine.model.object;
 import com.teqtrue.engine.graphics.Sprite;
 import com.teqtrue.engine.model.Coordinates;
 import com.teqtrue.engine.model.GlobalStore;
+import com.teqtrue.engine.screen.GameScreen;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -26,15 +27,18 @@ public class Projectile implements Serializable {
         uuid = UUID.randomUUID();
     }
 
-    public Runnable update() {
-        Projectile me = this;
+    public Runnable update(GameScreen parent) {
         return () -> {
             double newX = pos.getX() + vec.getX() * 0.6;
             double newY = pos.getY() + vec.getY() * 0.6;
 
             if (GlobalStore.getMap().hasCollision(new Coordinates(Math.floor(newX), Math.floor(newY)))) {
-                GlobalStore.getMap().removeProjectile(me);
+                GlobalStore.getMap().removeProjectile(this);
                 return;
+            }
+
+            if (parent.getPlayer().getCoordinates().distanceFrom(pos) > 10) {
+                GlobalStore.getMap().removeProjectile(this);
             }
 
             pos = new Coordinates(newX, newY);

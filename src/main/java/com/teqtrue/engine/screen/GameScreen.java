@@ -15,10 +15,12 @@ import com.teqtrue.engine.model.object.entity.instances.Player;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.geometry.VPos;
 import javafx.scene.Cursor;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -34,6 +36,7 @@ public class GameScreen implements IApplicationScreen {
     private double screenWidth = GlobalStore.getScreenSize().getX();
     private double screenHeight = GlobalStore.getScreenSize().getY();
     private EndScreen endScreen = EndScreen.NONE;
+    private boolean laser = false;
 
     @Override
     public void init(GraphicsContext gc) {
@@ -48,12 +51,27 @@ public class GameScreen implements IApplicationScreen {
         this.gameMap.addEntity(this.player);
         this.camera = new Coordinates(this.player.getCoordinates());
 
+        EventHandler<KeyEvent> eventHandler = new EventHandler<>() {
+            @Override
+            public void handle(KeyEvent e) {
+                if (e.getCode().equals(KeyCode.F)) {
+                    laser = !laser;
+                }
+            }
+        };
+
+        // ADD LISTENER
+        gc.getCanvas().getScene().addEventHandler(KeyEvent.KEY_PRESSED, eventHandler);
+
         // LOOP BOOTSTRAP
         try {
             loop();
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        // REMOVE LISTENER
+        gc.getCanvas().getScene().removeEventHandler(KeyEvent.KEY_PRESSED, eventHandler);
 
         // GraphicsContext RESET
         gc.getCanvas().getScene().setCursor(Cursor.HAND);
@@ -98,7 +116,7 @@ public class GameScreen implements IApplicationScreen {
 
         // THREADS FOR PROJECTILE UPDATE
         for (Projectile projectile : projectiles) {
-            Thread newThread = new Thread(projectile.update());
+            Thread newThread = new Thread(projectile.update(this));
             threadPool.add(newThread);
             newThread.start();
         }
@@ -143,54 +161,56 @@ public class GameScreen implements IApplicationScreen {
         }
 
         // DRAW LASER SIGHT
-        Coordinates mousePos = KeyMap.getMouse();
-        double mouseCenteredX = mousePos.getX() - screenWidth / 2;
-        double mouseCenteredY = mousePos.getY() - screenHeight / 2;
-
-        double[] dist = new double[4];
-        dist[0] = mousePos.getX();
-        dist[1] = mousePos.getY();
-        dist[2] = screenWidth - dist[0];
-        dist[3] = screenHeight - dist[1];
-
-        int closest = -1;
-
-        for (int i = 0; i < 4; i++) {
-            if (closest == -1 || dist[i] < dist[closest]) {
-                closest = i;
+        if (laser) {
+            Coordinates mousePos = KeyMap.getMouse();
+            double mouseCenteredX = mousePos.getX() - screenWidth / 2;
+            double mouseCenteredY = mousePos.getY() - screenHeight / 2;
+    
+            double[] dist = new double[4];
+            dist[0] = mousePos.getX();
+            dist[1] = mousePos.getY();
+            dist[2] = screenWidth - dist[0];
+            dist[3] = screenHeight - dist[1];
+    
+            int closest = -1;
+    
+            for (int i = 0; i < 4; i++) {
+                if (closest == -1 || dist[i] < dist[closest]) {
+                    closest = i;
+                }
             }
+    
+            double lineEndX = 0;
+            double lineEndY = 0;
+            double ratio = 0;
+    
+            switch (closest) {
+            case 0:
+                ratio = mouseCenteredY / mouseCenteredX;
+                lineEndX = -(screenWidth / 2);
+                lineEndY = lineEndX * ratio;
+                break;
+            case 1:
+                ratio = mouseCenteredX / mouseCenteredY;
+                lineEndY = -(screenHeight / 2);
+                lineEndX = lineEndY * ratio;
+                break;
+            case 2:
+                ratio = mouseCenteredY / mouseCenteredX;
+                lineEndX = screenWidth / 2;
+                lineEndY = lineEndX * ratio;
+                break;
+            case 3:
+                ratio = mouseCenteredX / mouseCenteredY;
+                lineEndY = screenHeight / 2;
+                lineEndX = lineEndY * ratio;
+                break;
+            }
+    
+            gc.setStroke(Color.RED);
+            gc.setLineWidth(1);
+            gc.strokeLine(screenWidth / 2, screenHeight / 2, lineEndX + screenWidth / 2, lineEndY + screenHeight / 2);    
         }
-
-        double lineEndX = 0;
-        double lineEndY = 0;
-        double ratio = 0;
-
-        switch (closest) {
-        case 0:
-            ratio = mouseCenteredY / mouseCenteredX;
-            lineEndX = -(screenWidth / 2);
-            lineEndY = lineEndX * ratio;
-            break;
-        case 1:
-            ratio = mouseCenteredX / mouseCenteredY;
-            lineEndY = -(screenHeight / 2);
-            lineEndX = lineEndY * ratio;
-            break;
-        case 2:
-            ratio = mouseCenteredY / mouseCenteredX;
-            lineEndX = screenWidth / 2;
-            lineEndY = lineEndX * ratio;
-            break;
-        case 3:
-            ratio = mouseCenteredX / mouseCenteredY;
-            lineEndY = screenHeight / 2;
-            lineEndX = lineEndY * ratio;
-            break;
-        }
-
-        gc.setStroke(Color.RED);
-        gc.setLineWidth(1);
-        gc.strokeLine(screenWidth / 2, screenHeight / 2, lineEndX + screenWidth / 2, lineEndY + screenHeight / 2);
 
         // DRAW ENTITITES
         for (IEntity entity : gameMap.getEntities()) {
@@ -243,8 +263,11 @@ public class GameScreen implements IApplicationScreen {
         }
 
         // DRAW SCOPE
-        GlobalStore.getSprites()[12].drawSprite(gc, KeyMap.getMouse().getX() - GlobalStore.getTileSize() / 2 - 1,
-                KeyMap.getMouse().getY() - GlobalStore.getTileSize() / 2 - 1);
+        GlobalStore.getSprites()[12].drawSprite(
+            gc,
+            KeyMap.getMouse().getX() - GlobalStore.getTileSize() / 2 - 1,
+            KeyMap.getMouse().getY() - GlobalStore.getTileSize() / 2 - 1
+        );
 
         // DRAW END SCREEN
         if (endScreen != EndScreen.NONE) {
@@ -286,6 +309,10 @@ public class GameScreen implements IApplicationScreen {
             e.printStackTrace();
         }
         die = true;
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 
     private enum EndScreen {
