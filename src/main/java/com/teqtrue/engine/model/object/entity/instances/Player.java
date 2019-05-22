@@ -29,7 +29,7 @@ public class Player extends AEntity {
     }
 
     @Override
-    public Runnable update(ArrayList<Projectile> projectiles, GameScreen parent) {
+    public Runnable update(GameScreen parent) {
         return () -> {
             // WASD+Shift movement
             Coordinates pos = getCoordinates();
@@ -43,6 +43,7 @@ public class Player extends AEntity {
             double newY = pos.getY() + movementVector.getY() * getSpeed() * speedMult * 0.02;
 
             // projectile collisions
+            ArrayList<Projectile> projectiles = gameMap.getProjectiles();
             for (Projectile projectile : projectiles) {
                 Coordinates coords = projectile.getPosition();
                 if (coords.getX() > pos.getX() && coords.getX() < pos.getX() + 1 && coords.getY() > pos.getY() && coords.getY() < pos.getY() + 1) {

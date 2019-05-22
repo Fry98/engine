@@ -13,11 +13,10 @@ public interface IEntity {
      * Update method is called by the engine on each frame.
      * All entities should use it to check for interactions with the world
      * and to update their own state.
-     * @param projectiles list of all projectiles floating in the game
      * @param parent parent screen representing current state of the game
      * @return a {@code Runnable} object from which a new thread will be created
      */
-    Runnable update(ArrayList<Projectile> projectiles, GameScreen parent);
+    Runnable update(GameScreen parent);
 
     /**
      * Returns current position of the entity.

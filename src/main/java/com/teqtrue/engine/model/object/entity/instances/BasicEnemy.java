@@ -27,7 +27,7 @@ public class BasicEnemy extends AEntity {
     }
 
     @Override
-    public Runnable update(ArrayList<Projectile> projectiles, GameScreen parent) {
+    public Runnable update(GameScreen parent) {
         BasicEnemy me = this;
         return () -> {
             Coordinates pos = getCoordinates();
@@ -88,6 +88,7 @@ public class BasicEnemy extends AEntity {
             }
 
             // projectile collisions
+            ArrayList<Projectile> projectiles = gameMap.getProjectiles();
             for (Projectile projectile : projectiles) {
                 Coordinates coords = projectile.getPosition();
                 if (coords.getX() > pos.getX() && coords.getX() < pos.getX() + 1 && coords.getY() > pos.getY() && coords.getY() < pos.getY() + 1) {
