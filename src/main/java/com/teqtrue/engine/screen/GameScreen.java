@@ -36,7 +36,7 @@ public class GameScreen implements IApplicationScreen {
     private double screenWidth = GlobalStore.getScreenSize().getX();
     private double screenHeight = GlobalStore.getScreenSize().getY();
     private EndScreen endScreen = EndScreen.NONE;
-    private boolean laser = false;
+    private boolean laser = true;
 
     @Override
     public void init(GraphicsContext gc) {
@@ -231,6 +231,22 @@ public class GameScreen implements IApplicationScreen {
                             - camera.getY());
         }
 
+        // DRAW HEALTH BAR ABOVE EACH ENEMY
+        for (IEntity entity : gameMap.getEntities()) {
+            if (entity instanceof Player) {
+                continue;
+            }
+            double unit = 1.0 * GlobalStore.getTileSize() / entity.getMaxHealth();
+            double greenLength = entity.getHealth() * unit;
+            Coordinates entityCoords = entity.getCoordinates();
+            double x = entityCoords.getX() * GlobalStore.getTileSize() - camera.getX();
+            double y = entityCoords.getY() * GlobalStore.getTileSize() - camera.getY() - 10;
+            gc.setFill(Color.GREEN);
+            gc.fillRect(x, y, greenLength, 5);
+            gc.setFill(Color.RED);
+            gc.fillRect(x + greenLength, y, GlobalStore.getTileSize() - greenLength, 5);
+        }
+
         // DRAW HEALTH BAR
         double screen = GlobalStore.getScreenSize().getX() - 80;
         double unit = screen / player.getMaxHealth();
@@ -245,22 +261,6 @@ public class GameScreen implements IApplicationScreen {
             gc.strokeLine(greenLength + 40, 15, greenLength + 40, 45);
         }
         gc.strokeRect(40, 15, screen, 30);
-
-        // DRAW HEALTH BAR ABOVE EACH ENEMY
-        for (IEntity entity : gameMap.getEntities()) {
-            if (entity instanceof Player) {
-                continue;
-            }
-            unit = 1.0 * GlobalStore.getTileSize() / entity.getMaxHealth();
-            greenLength = entity.getHealth() * unit;
-            Coordinates entityCoords = entity.getCoordinates();
-            double x = entityCoords.getX() * GlobalStore.getTileSize() - camera.getX();
-            double y = entityCoords.getY() * GlobalStore.getTileSize() - camera.getY() - 10;
-            gc.setFill(Color.GREEN);
-            gc.fillRect(x, y, greenLength, 5);
-            gc.setFill(Color.RED);
-            gc.fillRect(x + greenLength, y, GlobalStore.getTileSize() - greenLength, 5);
-        }
 
         // DRAW SCOPE
         GlobalStore.getSprites()[12].drawSprite(
