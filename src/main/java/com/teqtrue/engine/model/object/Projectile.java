@@ -39,6 +39,7 @@ public class Projectile implements Serializable {
 
             if (parent.getPlayer().getCoordinates().distanceFrom(pos) > 10) {
                 GlobalStore.getMap().removeProjectile(this);
+                return;
             }
 
             pos = new Coordinates(newX, newY);
